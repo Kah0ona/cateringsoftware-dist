@@ -1,0 +1,84 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Shopping cart plugin test bed</title>
+
+
+		<link rel="stylesheet" href="http://hapjesenco.lijktmeduidelijk.nl/wp-content/themes/hapjesenco/skeleton.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="http://hapjesenco.lijktmeduidelijk.nl/wp-content/themes/hapjesenco/style.css" type="text/css" media="screen" />
+		
+		<link rel="alternate" type="application/rss+xml" title="Hapjes en Co RSS Feed" href="http://hapjesenco.lijktmeduidelijk.nl/feed/" />
+		<link rel="alternate" type="application/atom+xml" title="Hapjes en Co Atom Feed" href="http://hapjesenco.lijktmeduidelijk.nl/feed/atom/" />
+		<link rel="pingback" href="http://hapjesenco.lijktmeduidelijk.nl/xmlrpc.php" />
+		
+		
+		<link rel="alternate" type="application/rss+xml" title="Hapjes en Co &raquo; Home Reacties feed" href="http://hapjesenco.lijktmeduidelijk.nl/home/feed/" />
+		<link rel='stylesheet' id='flick-css'  href='http://hapjesenco.lijktmeduidelijk.nl/wp-content/plugins/mailchimp//css/flick/flick.css?ver=3.3.1' type='text/css' media='all' />
+		<link rel='stylesheet' id='mailchimpSF_main_css-css'  href='http://hapjesenco.lijktmeduidelijk.nl/?mcsf_action=main_css&#038;ver=3.3.1' type='text/css' media='all' />
+
+		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js?ver=3.3.1'></script>
+		<script type='text/javascript' src="jquery.json.min.js"></script>
+		<script src="jquery.shoppingcart.js" type="text/javascript"></script>
+		
+		<script>
+		$(document).ready(function(){
+			$('#shoppingcart').shoppingCart();
+		});
+		</script>
+	</head>
+	<body>
+		<h1>Shopping cart plugin test bed</h1>
+		
+		<!-- this shows the items currently in the cart -->
+		<div id="shoppingcart">
+		
+	
+		</div>
+		
+		<div class="product">
+			<img alt="img" src="http://hapjesenco.lijktmeduidelijk.nl/wp-content/themes/hapjesenco/images/rauwkostdip.jpeg">
+			<div class="product-data">
+				<h3>Rauwkost Dip</h3>
+				<div class="buy">
+					<span class="addtocart" 
+						  productData='{ "type" : "package", "Package_id": 14, "title": "Rauwkost Dip", "price": 8.50, "products" : [ {"type": "product", "Product_id" : 1, "title" : "Knoflooksaus", "quantity" : 1}, {"type": "product",  "Product_id" : 7, "title" : "Sambasaus", "quantity" : 1 }] }'
+					>
+						<a href="#" >Voeg toe</a>
+					</span>
+					<div class="price">8,50€</div>
+				</div>
+			</div>
+		</div>
+		<div class="product">
+			<img alt="img" src="http://hapjesenco.lijktmeduidelijk.nl/wp-content/themes/hapjesenco/images/taco-dip.jpeg">
+			<div class="product-data">
+				<h3>Taco Dip</h3>
+				<div class="buy">
+					<span class="addtocart" 
+						  productData="{ type : 'package', Package_id: 13, title: 'Taco Dip', price: 12.50, products : [ {type: 'product', Product_id : 2, title : 'Knoflook', quantity : 2}, {type: 'product',  Product_id : 1, title : 'Jalapeno', quantity : 1 }] }"
+					>
+					<a href="#" >Voeg toe</a>
+					</span>
+					<div class="price">12,50€</div>
+				</div>
+			</div>
+		</div>
+		<div style="clear:both"></div>
+		<h1> Losse gerechten </h1>
+		<div class="product">
+			<img alt="img" src="http://hapjesenco.lijktmeduidelijk.nl/wp-content/themes/hapjesenco/images/cup-cake-assorti.jpeg">
+			<div class="product-data">
+				<h3>Cupcakes assorti</h3>
+				<div class="buy">
+					<span class="addtocart" 
+						  productData="{ type : 'product', Product_id: 21, 'title': 'Cupcakes assorti', 'price': 17.50 }"
+					>
+					<a href="#" >Voeg toe</a>
+					</span>
+					<div class="price">17,50€</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>

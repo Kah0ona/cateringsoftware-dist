@@ -1,0 +1,72 @@
+
+#workshops {
+
+}
+.ul.agenda-item li p a {
+
+}
+
+
+
+/**
+* Media queries, to show things differently on mobile devices
+*/
+
+	/* Smaller than standard 960 (devices and browsers) */
+	@media only screen and (max-width: 959px) {
+	
+	}
+
+	/* Tablet Portrait size to standard 960 (devices and browsers) */
+	@media only screen and (min-width: 768px) and (max-width: 959px) {
+		.workshop.detail {
+			width: 98%;
+			border-bottom: 0px;
+		}
+	}
+
+	/* All Mobile Sizes (devices and browser) */
+	@media only screen and (max-width: 767px) {
+		.workshop {
+			margin-bottom: 20px;
+			float: left;
+			width: 100%;
+			min-height: inherit;
+			position: relative;
+			border-bottom: 1px solid #cfb987;
+		}
+		.workshop img {
+			float: none;
+			margin: 0px 0px 10px 0px;
+			padding: 5px;
+			display: block;
+			background: #f0ddb1;
+			max-width: 100%;
+			height: auto;
+		}
+		.workshop.left-box {
+			margin-right: 0px;
+		}
+		.workshop.right-box {
+			margin-left: 0px;
+		}
+		.workshop-button { /* read more link */
+			position: relative;
+			bottom: 0px;
+		}
+		.form-column {
+			float: none;
+			display:block;
+			width: 98%;
+		}
+	}
+
+	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+	@media only screen and (min-width: 480px) and (max-width: 767px) {
+	
+	}
+
+	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+	@media only screen and (max-width: 479px) {
+
+	}

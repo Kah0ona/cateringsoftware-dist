@@ -1,0 +1,70 @@
+td.smallcolumn, th.smallcolumn {
+	width: 75px;
+}
+
+td.text-center, th.text-center {
+	text-align: center;
+}
+
+td.text-left, th.text-left {
+	text-align: left;
+}
+
+td.text-right, th.text-right {
+	text-align: right;
+}
+tr.thick-border {
+	border-top: 2px solid #555;
+}
+
+tr.thick-border-bottom {
+	border-bottom: 2px solid #555;
+}
+
+.product-added {
+
+	margin-left: 5px;
+}
+
+div#map-placeholder {
+	width: 500px;
+	height: 200px;
+	
+}
+
+.detail-thumb {
+	width: 75px;
+	margin: 3px;
+}
+
+
+.cart-block .quantity {
+    float: left;
+    width: 10%;
+}
+
+.cart-block .product-name {
+    float: left;
+    width: 85%;
+}
+
+.cart-block .product-remove {
+    float: left;
+    width: 5%;
+}
+
+.divider {
+	border-bottom: 1px solid #F0DEB9;
+}
+
+i.icon-shopping-cart {
+  vertical-align: bottom;
+
+}
+
+
+
+.deal-image {
+	
+}
+
