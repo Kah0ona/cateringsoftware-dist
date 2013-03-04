@@ -1,5 +1,4 @@
 <?php
-define('PLUGIN_SERVER_URL','http://www.lijktmeduidelijk.nl/wp-content/plugins/cateringsoftware-server');
 define('SYSTEM_URL_CATERINGSOFTWARE', 'http://beheer.cateringsoftware.nl');
 define('BASE_URL_CATERINGSOFTWARE', SYSTEM_URL_CATERINGSOFTWARE.'/public');
 define('EURO_FORMAT', '%.2n');
@@ -41,4 +40,5 @@ $changeCodeError = null;
 $showPicOnOverview = true;
 $cartText = '';
 $checkoutLink = '';
+$pricesAreInclVat = true;
 ?>

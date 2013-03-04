@@ -12,6 +12,7 @@
 	global $changeCodeError;
 	global $cartText;
 	global $checkoutLink;
+	global $pricesAreInclVat;
 	$shouldRender=false;
 
 //print_r($_SESSION);
@@ -49,11 +50,13 @@ jQuery(document).ready(function(){
 			echo $x;
 			?>,
 			"address" : "<?php echo $theAddress; ?>",
+			"pricesAreInclVat" : <?php echo $pricesAreInclVat; ?>,
 			"region"  : "<?php echo $theRegion; ?>",
 			"deliveryCosts" : <?php echo fetchDeliveryCosts(array('hostname'=>$theHostname, 'ordering'=>'ASC', 'orderBy'=>'minKm', 'useFormula'=>(($useDeliveryFormula == "false") ? false : true)), true); ?>,
 			"cartClass" : "<?php echo $theCartClass; ?>",
 			"cartDisplayMode" : "<?php echo $gCartDisplayMode; ?>",
-			"session_url" : "/wp-content/plugins/cateringsoftware-dist/cart_store.php",
+			"session_url" : "<?php echo get_site_url(); ?>/wp-content/plugins/cateringsoftware-dist/cart_store.php",
+			"checkout_page" : "<?php echo get_site_url(); ?>/checkout",
 			"deliveryFormula" : <?php echo $useDeliveryFormula; ?>,
 			"checkout_link" : "<?php echo $checkoutLink; ?>",
 			"cart_text" : "<?php echo $cartText; ?>",

@@ -936,19 +936,38 @@
 	    	methods.logger("deliveryCosts.price: " + deliveryCosts.price);
 	    	totalInclVat += parseFloat(deliveryCosts.price);
 	    	
-	    	totalExclVat = totalInclVat;
-	    	methods.logger(vatMap);
-	    	for(var perc in vatMap){
-	    	    var p = parseFloat(perc.substr(1));
-	    		totalExclVat -= parseFloat(vatMap[perc]) - (parseFloat(vatMap[perc]) / (1+p));
-	    		if(totalInclVat == 0){
-					vatMap[perc] = 0;	    		
-	    		}
-	    		else {
-					vatMap[perc]=parseFloat(vatMap[perc]) - (parseFloat(vatMap[perc]) / (1+p));
-				}
+	    	
+	    	if(settings.pricesAreInclVat){
+		    	totalExclVat = totalInclVat;
+		    	methods.logger(vatMap);
+		    	for(var perc in vatMap){
+		    	    var p = parseFloat(perc.substr(1));
+		    		totalExclVat -= parseFloat(vatMap[perc]) - (parseFloat(vatMap[perc]) / (1+p));
+		    		if(totalInclVat == 0){
+						vatMap[perc] = 0;	    		
+		    		}
+		    		else {
+						vatMap[perc]=parseFloat(vatMap[perc]) - (parseFloat(vatMap[perc]) / (1+p));
+					}
+			    }
 		    }
+		    else {
+			    totalExclVat = totalInclVat;
+			    
+			    //modify totalInclVat to be the REAL totalInclVat, by adding the vatmap's contents
+			    methods.logger(vatMap);
+		    	for(var perc in vatMap){
+		    	    var p = parseFloat(perc.substr(1));
+		    		totalInclVat += parseFloat(vatMap[perc] * p);
+		    		if(totalInclVat == 0){
+						vatMap[perc] = 0;	    		
+		    		}
+		    		else {
+						vatMap[perc]=parseFloat(vatMap[perc] * p);
+					}
+			    }			    
 
+		    }
 	    	methods.logger('setting price: '+methods.formatEuro(totalInclVat));
 			
 			var discountTableDiscount = methods.calculateDiscountTableAndUpdateCart();
@@ -956,7 +975,15 @@
 			if(discountTableDiscount == null || discountTableDiscount == undefined)
 				discountTableDiscount = 0.0;
 			
-	    	$('.total-price').html(methods.formatEuro(totalInclVat * (1 - discountTableDiscount)));
+			var tot = 0;
+			if(settings.pricesAreInclVat){
+				tot = totalInclVat;
+			}
+			else {
+				tot = totalExclVat;
+			}
+			
+	    	$('.total-price').html(methods.formatEuro(tot * (1 - discountTableDiscount)));
 
 				
 			if(totalInclVat == 0) {
@@ -966,19 +993,25 @@
 			$('.deliverycosts-field').html("<strong>€ "+methods.formatEuro(deliveryCosts.price)+"</strong>");
 			$('.subtotal-field').html("<strong>€ "+methods.formatEuro(totalExclVat)+"</strong>");
 			
-			var totalWithCouponDiscount = 0;
-			if(discount > 0 && couponType == "normaal" || couponType == null || couponType == undefined){
-				$('#discount-row').removeClass('hidden');
-				totalWithCouponDiscount =totalInclVat * (1 - (parseInt(discount) / 100));
-			}
-			else {
-				$('#discount-row').addClass('hidden');
-				totalWithCouponDiscount =totalInclVat;
-			}
+			
 
 			
 			$('.discount-field').html("<strong>"+parseInt(discount)+"%</strong>");
+			
+			var totalWithCouponDiscount = 0;
+			var totalWithCouponDiscountExcl = 0;
+			if(discount > 0 && couponType == "normaal" || couponType == null || couponType == undefined){
+				$('#discount-row').removeClass('hidden');
+				totalWithCouponDiscount = totalInclVat * (1 - (parseInt(discount) / 100));
+			}
+			else {
+				$('#discount-row').addClass('hidden');
+				totalWithCouponDiscount = totalInclVat;
+			}					
+			//checkout page field
 			$('.total-field').html("<strong>€ "+methods.formatEuro(totalWithCouponDiscount * (1-discountTableDiscount))+"</strong>");	
+
+			
 			
 			for(var perc in vatMap){					
 				var sel = String(perc).replace('.','_');
@@ -1031,12 +1064,22 @@
 	    	
 	    	totalInclVat = price;
 	    	totalInclVat += deliveryCosts.price;
+	    	
+	    	
+	    	
 	    	methods.logger('setting price: '+methods.formatEuro(price));
 	    	var tableDiscount = methods.calculateDiscountTableAndUpdateCart();
 	    	methods.logger("TABLE DISCOUNT " +tableDiscount);
 	    	var discountFactor = 1 - (tableDiscount + (parseFloat(discount) / 100.0));
 	    	methods.logger("DISCOUNT FACTOR " + discountFactor);
-	    	var t = totalInclVat * discountFactor;
+	    	
+	    	var tot = settings.pricesAreInclVat ? totalInclVat : totalExclVat;
+	    	
+	    	
+	    	var t = tot * discountFactor;
+	    	
+	 
+	    	
 	    	methods.logger("TOTAL "+t);
 	    	$('.total-price').html(methods.formatEuro(t));
 

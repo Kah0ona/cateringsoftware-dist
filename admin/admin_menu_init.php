@@ -28,6 +28,8 @@ function cateringsoftware_register_settings() {
   add_cs_field('cart_class', 'CSS-class van het winkelwagentje:');
   add_cs_field_select('region','Land:', array('nl'=>'Nederland','be'=>'Belgi&euml;'));
   add_cs_field_boolean('use_formula','Gebruik bezorgformule:'); 
+  add_cs_field_boolean('prices_incl_vat','Prijzen staan inclusief BTW in CateringSoftware'); 
+  
   add_cs_field_boolean('allow_takeaway','Afhalen mogelijk?');
   add_cs_field_boolean('use_discount_table','Gebruik kortingstabel?');
   add_cs_field_select('cart_display_mode','Winkelwagen tonen als:', array('dropdown'=>'Dropdown','block'=>'In sidebar')); 

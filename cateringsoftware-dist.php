@@ -4,7 +4,7 @@
 Plugin Name: Catering Software connector
 Plugin URI: http://www.sytematic.nl/
 Description: Deze plugin koppelt met CateringSoftware.nl
-Version: 0.1
+Version: 0.2
 Author: Marten Sytema
 Author URI: http://www.sytematic.nl
 License: GPL2
@@ -30,6 +30,7 @@ License: GPL2
 //define('BASE_URL_CATERINGSOFTWARE', 'http://cateringsoftware.sytematic.nl/public');
 define('CATSOFT_PLUGIN_PATH', plugin_dir_path(__FILE__) );
 define('CATSOFT_PLUGIN_ADMIN_PATH',CATSOFT_PLUGIN_PATH.'admin');
+define('PLUGIN_SERVER_URL',get_site_url().'/wp-content/plugins/cateringsoftware-dist');
 
 
 include_once('config.php');
@@ -561,6 +562,7 @@ function cateringsoftware_cart_init($atts) {
 	'use_discount_table'=>'false',
 	'cart_text'=>'Totaal bestelling',
 	'checkout_link'=>'Afrekenen',
+	'prices_incl_vat' => 'false'
 	), $atts));
 	$hostname;
 	global $theHostname;
@@ -573,8 +575,9 @@ function cateringsoftware_cart_init($atts) {
 	global $useDiscountTable;
 	global $cartText;
 	global $checkoutLink;
+	global $pricesAreInclVat;
 	
-	
+	$pricesAreInclVat = $prices_incl_vat;
 	$theHostname = $hostname;
 	$theAddress = $address;
 	$theRegion = $region;
