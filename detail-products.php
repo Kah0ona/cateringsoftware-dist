@@ -28,6 +28,8 @@
 		}
 	}
 	
+	
+	
 	$w=null;
 	if(count($products)>0){
 		$w = $products[0];
