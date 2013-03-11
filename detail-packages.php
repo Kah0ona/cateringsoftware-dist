@@ -104,7 +104,7 @@
 	<div class="row-fluid">
 		<div class="product span12 featured">			
 			<div class="row-fluid">		
-			   <?php if($w->imagePkg != null && $showProductImageOnDetail != "false") { $imgSpan = '8'; $imgSpan2='4'; ?>
+			   <?php if($w->imagePkg != null) { $imgSpan = '8'; $imgSpan2='4'; ?>
 				   <div class="productimage span<?php echo $imgSpan; ?>"> 
 					  <img alt="<?php echo $w->pkgName; ?>" src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imagePkg; ?>">
 					  
@@ -155,6 +155,8 @@
 						 	
 						 		<a  data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
 						 		   rel="popover" 
+							 	   data-placement="left"
+						 		   
 						 		   data-trigger="hover"
 						 		   class="label label-info xtooltip package-dish-tooltip" 
 						 		   href="#" 
@@ -183,6 +185,8 @@
 							 	   <?php echo $d->dishName; ?>
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
 							 		   rel="popover" 
+								 	   data-placement="left"
+							 		   
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
@@ -212,6 +216,8 @@
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
 						 		   rel="popover" 
 						 		   data-trigger="hover"
+						 		   data-placement="left"
+
 						 		   class="label label-info xtooltip package-dish-tooltip" 
 						 		   href="#" 
 						 		   data-original-title="<?php echo $d->dishName; ?>">info</a>
@@ -243,6 +249,7 @@
 						 		
 						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' />" 
 							 		   rel="popover" 
+   							 		   data-placement="left"
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
@@ -267,7 +274,8 @@
 						 		   <?php echo getAmountForm($d->amountMaterial, 'amount-extra extra-material-'.$d->Material_id, 'extra-product-'.$d->Material_id); ?>&nbsp;
 							 	   <?php echo $d->materialName; ?> (€<?php echo money_format('%.2n', $d->materialPrice); ?> per stuk)
 							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' />" 
-							 		   rel="popover" 
+							 		   rel="popover"
+							 		   data-placement="left"							 		    
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
@@ -287,7 +295,7 @@
 						<p class="add-to-cart-text-pkg">Als u tevreden bent met uw keuze-instellingen, klik op onderstaande knop om dit pakket aan het winkelmandje toe te voegen.</p>
 						<p id="validation-error" class="hidden alert alert-error"><strong>Let op!</strong> Een aantal dingen in het formulier is niet goed ingevuld, herstel deze eerst.</p>
 						<p  class="product-added hidden alert alert-info">
-							<strong>Toegevoegd</strong> aan winkelwagentje. U kunt verder winkelen, of <a href="/checkout">afrekenen</a>.
+							<strong>Toegevoegd</strong> aan winkelwagentje. U kunt verder winkelen, of <a href="/checkout">uw bestelling plaatsen</a>.
 						</p> 
 					    <span product-type="package" product-index='0' class="addtocart">
 						  <a href="#" class="btn" >Voeg toe</a>

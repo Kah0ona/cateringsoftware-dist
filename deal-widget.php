@@ -41,9 +41,8 @@
 	<!-- these are cycled using jquery cycle -->
 	<div class="row-fluid deal-entry" data-template style="display: none;">
 		<div class="span12">
-			<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE; ?>/{{imagePkg}}" width="100" style="margin: 5px;" />
-			<h3>{{pkgName}}</h3>
-			<p>&euro; {{packagePrice}}</p>
+			<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE; ?>/{{imagePkg}}" style="margin: 5px;" />
+			<h3>{{pkgName}} <small> &euro; {{packagePrice}}</small></h3>
 			<p>{{pkgDesc | truncate 150 }}</p>
 			<p><a href="/packages/{{Package_id}}">Lees meer</a></p>
 		</div>
