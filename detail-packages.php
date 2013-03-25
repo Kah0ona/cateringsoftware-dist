@@ -5,7 +5,7 @@
 	global $theNumCols;
 	global $showProductImageOnDetail;
 	global $presetPackageData;
-	
+	global $columns5050;
 	$dealsClass ="";
 	if($presetPackageData==null){
 		$params = array(
@@ -104,7 +104,9 @@
 	<div class="row-fluid">
 		<div class="product span12 featured">			
 			<div class="row-fluid">		
-			   <?php if($w->imagePkg != null) { $imgSpan = '8'; $imgSpan2='4'; ?>
+			   <?php if($w->imagePkg != null) { $imgSpan = '8'; $imgSpan2='4'; 
+				   		if($columns5050) { $imgSpan = '6'; $imgSpan2 = '6'; }
+			   ?>
 				   <div class="productimage span<?php echo $imgSpan; ?>"> 
 					  <img alt="<?php echo $w->pkgName; ?>" src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imagePkg; ?>">
 					  
@@ -131,7 +133,7 @@
 			<div class="span6 data-left">
 				<div class="row-fluid datarow">
 					<div class="span12 ">
-						<h3>Aantal:
+						<h3><span id="num">Aantal:</span>
 						    <span class="small">
 						    	<input class="input-small" name="product-amount" id="product-amount" value="<?php echo ($w->pkgNumPersons == null ? "1" : $w->pkgNumPersons) ?>" type="text" /> 
 						    </span>

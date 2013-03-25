@@ -165,12 +165,12 @@ function includeMandatoryScripts(){
 function includeScripts($foundRecipes=false,$foundWorkshopDetail=false,$foundProducts=false,$foundCheckout=false){
 	
 	if($foundWorkshopDetail || $foundCheckout) {
-		$jqueryUiCss = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css';
+		$jqueryUiCss = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css';
 		$handle = 'jquery-ui-css';
 		wp_register_style($handle,$jqueryUiCss, array());
 		wp_enqueue_style($handle);
 		
-		$jqueryui = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js';
+		$jqueryui = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js';
 		$handle='jquery-ui';
 		wp_register_script($handle,$jqueryui, array('jquery'));
 		wp_enqueue_script($handle);	
@@ -291,6 +291,7 @@ function cateringsoftware_packages_dishes($atts) {
 		'view_detail'=>"true",
 		'quick_add_button'=>"true",
 		'show_image_on_detail'=>"true",
+		'columns_50_50' => false,
 		'no_pic_on_overview' => false
 		), $atts));
 	
@@ -306,6 +307,7 @@ function cateringsoftware_packages_dishes($atts) {
 	global $useQuickAddButton;
 	global $showProductImageOnDetail;
 	global $showPicOnOverview;
+	global $columns5050;
 	$hostname;
 	$type;
 	$numcols;
@@ -319,6 +321,8 @@ function cateringsoftware_packages_dishes($atts) {
 	$useViewDetail = $view_detail;
 	$useQuickAddButton = $quick_add_button ;
     $showProductImageOnDetail = $show_image_on_detail;
+    
+    $columns5050 = ( $columns_50_50 == "true" || $columns_50_50 == 1) ? true : false;
     
     if($no_pic_on_overview == null)
 	    $showPicOnOverview = true;	    

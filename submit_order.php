@@ -76,6 +76,12 @@ function doOrderLogic($post){
 		$post['endTime'] = $timePieces[1].':00';
 		
 		$ret = curl_post(BASE_URL_CATERINGSOFTWARE.'/orders', $post);
+		$obj = json_decode($ret);
+		$oid = $obj->Order__id;
+		if($oid == null || $oid == ""){
+			$oid = '-'.time(); //make negative number, so the failed orders can be tracked in GA.
+		}
+		$_SESSION['Order__id'] = $oid;
 		log2("returned value from /orders: ".$ret);
 	}
 	return $ret;
