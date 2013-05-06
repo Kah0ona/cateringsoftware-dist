@@ -542,6 +542,7 @@
 		<div class="row-fluid">
 			<div class="span12">
 				<h3>Bestellingsgegevens</h3>
+				<div class="order-expl"></div>
 			    <div class="control-group">
 			   		<div id="dateError" class="hidden alert alert-error">De datum moet minimaal overmorgen zijn. Eerder bestellen? Neem dan contact op.</div>
 			   		<label class="control-label" for="orderDate">Datum (formaat: dd-mm-jjjj): *</label>			
