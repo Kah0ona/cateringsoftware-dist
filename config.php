@@ -42,4 +42,5 @@ $cartText = '';
 $checkoutLink = '';
 $pricesAreInclVat = true;
 $columns5050 = false;
+$showCategoryDescription=false;
 ?>

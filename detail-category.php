@@ -3,7 +3,7 @@
 	global $theNumCols;
 	global $theGroupTitle;
 	global $presetCategoryData;
-	
+	global $showCategoryDescription;
 	
 	if($presetCategoryData == null ){
 		$params = array(
@@ -24,12 +24,15 @@
 	else {
 		$cats = $presetCategoryData;		
 	}
-	
 
 	$cat = null;
 	if(count($cats)>0){
 		$cat = $cats[0];
 	}
+
+	if($showCategoryDescription && $cat->categoryDesc != null && $cat->categoryDesc != "") {
+		echo '<p>'.$cat->categoryDesc.'</p>';
+	} 
 
 	$dishes = $cat->Dish;
 	if(count($dishes) > 0){

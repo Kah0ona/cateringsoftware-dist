@@ -428,7 +428,8 @@ function cateringsoftware_category_shorttag($atts){
 		'quick_add_button'=>"true",
 		'display_type'=>'widget', //sidebar widget | page
 		'category_order'=>null,
-		'no_pic_on_overview'=>false
+		'no_pic_on_overview'=>false,
+		'show_category_description'=>"false"
 		), $atts));
 	global $theHostname;
 	global $theNumCols;
@@ -438,7 +439,10 @@ function cateringsoftware_category_shorttag($atts){
 	global $showPicOnOverview;
 	global $categoryTitleOrder;
 	global $categoryDetailHasLoaded;
+	global $showCategoryDescription;
 	$useQuickAddButton = $quick_add_button;
+
+
 
 	$options = get_option('cateringsoftware_options');
 	$theHostname=$options['hostname'];
@@ -460,6 +464,7 @@ function cateringsoftware_category_shorttag($atts){
     else 
      	$showPicOnOverview = true;
      	
+    $showCategoryDescription= ($show_category_description == "true" || $show_category_description == 1);
      	
 
 	if($display_type=='widget'){
