@@ -145,7 +145,11 @@ setlocale(LC_MONETARY, 'it_IT');
 				<p><?php echo nl2br($w->pkgDesc); ?></p>
 			<?php } ?>
 			<div class="buy">
+				<?php if($w->packagePrice == 0 || $w->packagePrice == "0" || $w->packagePrice == null) :?>
+				<span class="price">Prijs: zelf samenstellen</span>
+				<?php else: ?>
 				<span class="price">&euro;<?php echo money_format('%.2n', $w->packagePrice); ?> </span>
+				<?php endif; ?>
 				<?php if($useQuickAddButton=="true" && false) : //now not feasible anymore, since API becomes too slow. ?>
 				<span class="addtocart" product-type="package" product-index='<?php echo $c; ?>'><a href="#">Voeg toe</a></span>
 				<?php endif; ?>

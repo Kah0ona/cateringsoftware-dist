@@ -146,7 +146,7 @@
 			</tr>
 			<?php foreach($cart as $pkg) { $pkg = (object) $pkg; ?>
 				<!-- list packages first -->
-				<?php if($pkg->type == 'package'){ ?>
+				<?php if($pkg->type == 'package' && $pkg->price > 0){ ?>
 					<tr class="package-row-<?php echo $pkg->Package_id; ?>">
 						<td><strong><?php echo $pkg->quantity; ?> x</strong></td>
 						<td>

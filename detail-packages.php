@@ -93,14 +93,16 @@
 <script type="text/javascript"> 
 	jQuery(document).ready(function(){
 		$('.xtooltip').popover();
+		
+		if(allProducts.packages[0].price == 0){
+			$('.amount-form-row').css('visibility','hidden');
+		}
 	});
 	
 </script>
 
 <div class="product single-product">
-	
 	<p><a class="backtooverview" href="javascript:history.back()">&larr; terug naar overzicht</a></p>
-
 	<div class="row-fluid">
 		<div class="product span12 featured">			
 			<div class="row-fluid">		
@@ -119,8 +121,11 @@
 				   </div><!-- productimage -->
 			   <?php } else { $imgSpan2 = '12'; }?>
 	  		   <div class="product-data span<?php echo $imgSpan2; ?>">
-	  		   
-				    <span class="price">€ <?php echo money_format('%.2n', $w->packagePrice); ?> </span>
+					<?php if($w->packagePrice == 0 || $w->packagePrice == "0" || $w->packagePrice == null) :?>
+				    <span class="price">Prijs: zelf samenstellen</span>
+				    <?php else: ?>
+				    <span class="price">€ <?php echo money_format('%.2n', $w->packagePrice); ?> </span>				    
+				    <?php endif; ?>
 				    <h3><?php echo $w->pkgName; ?></h3>
 					<p><?php echo nl2br($w->pkgDesc); ?></p>
 			   </div><!-- product-data -->
@@ -131,7 +136,7 @@
 	<form class="form-horizontal">
 		<div class="row-fluid data-wrap">
 			<div class="span6 data-left">
-				<div class="row-fluid datarow">
+				<div class="row-fluid datarow amount-form-row">
 					<div class="span12 ">
 						<h3><span id="num">Aantal:</span>
 						    <span class="small">

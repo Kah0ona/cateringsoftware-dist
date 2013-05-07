@@ -323,8 +323,8 @@
 								 '<div style="clear: both"></div>'
 							'</li>';
 
-		    		
-		    		if(obj.type == "package") {
+		    		//only add if price is > 0 for packages
+		    		if(obj.type == "package" && obj.price > 0) {
 		    			packagesHtml += html;    		
 		    		}
 		    		else if (obj.type == "product") {
@@ -333,13 +333,8 @@
 		    		else if (obj.type == "material"){
 		    			materialsHtml += html;
 		    		}
-		    		
 		    	} 
-						    
-		  
 		    	str = methods.getTemplate(packagesHtml+productsHtml+materialsHtml+quantumDiscountHtml);
-		    	
-
 	    	}
 	    	
 	    	elt.html(str);
