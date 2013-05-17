@@ -34,6 +34,8 @@
 setlocale(LC_MONETARY, 'it_IT');
 ?>
 <script type="text/javascript">
+
+
 	allProducts.products = [
 <?php
 	$c = 0;

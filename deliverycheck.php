@@ -20,6 +20,8 @@
 	directionsDisplay = new google.maps.DirectionsRenderer();
 	
 	
+	
+	
 	function calculateDistance (cptaddr, callback) {
 	    	//calc distance between store and cptaddr (compare to address)
 	    	var queryData = {
@@ -169,7 +171,7 @@
 		});
 	}
 	
-	jQuery(document).ready(function(){
+	jQuery(document).ready(function($){
 		jQuery('#check-button').click(function(){
 			startDistanceCalculator();
 		});
@@ -183,7 +185,14 @@
 			event.preventDefault();
 			startDistanceCalculator();
 		});
-	
+		
+		
+		
+		var matchIE = /MSIE\s([\d]+)/;
+		if(matchIE.test(navigator.userAgent)){
+		  jQuery('.modal').removeClass('fade');
+		}
+
 	});
 	
 
