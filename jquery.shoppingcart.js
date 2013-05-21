@@ -452,7 +452,10 @@
 	    
 	    //if productData is supplied, that will be used, otherwise, the productdata attr will be used.
 	    //if productData parameter is used, it is assumed the quantity is also supplied in the object itself
-	    addProduct : function (event, productData) {
+	    addProduct : function (event, productData, shouldPersist) {
+	    	if (shouldPersist == null){
+		    	shouldPersist = true;
+	    	}
 	    	var quant=1;
 	    	
 	    	var product = null;
@@ -523,7 +526,9 @@
 			methods.logger("cart: ");
 			methods.logger(cartDataStore);
 			
-			methods.persist();
+			if(shouldPersist){
+				methods.persist();
+			}
 			
 			//add the item to each cart visually
 			cartPluginInstance.each(function(){
@@ -630,9 +635,12 @@
 	    			var productClone = jQuery.extend(true, {}, product);//deepcopy
 				
 	    			productClone.quantity = parseInt(quant); 
-	    			methods.addProduct(null, productClone);
+	    			methods.addProduct(null, productClone,false);
 	    		}
 	    	});
+	    	
+   			methods.persist();
+
 	    },	    	    
 	    removeProduct : function (event) {
 	    	methods.logger("Removing product");
