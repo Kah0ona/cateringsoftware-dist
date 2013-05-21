@@ -397,10 +397,11 @@ function cateringsoftware_recipe_shorttag($atts){
 function cateringsoftware_checkout_shorttag($atts){
 
 	global $theHostname;
+	global $allowWaitress;
 	$options = get_option('cateringsoftware_options');
 
 	$theHostname=$options['hostname'];
-
+	$allowWaitress = $options['allow_waitress'];
 	return executeFile('checkout.php');
 }
 

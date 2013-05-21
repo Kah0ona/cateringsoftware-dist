@@ -6,6 +6,7 @@
 	global $couponUrl;
 	global $deliveryCostUrl;
 	global $allowPickingUp;
+	global $allowWaitress;
 	$cart = null;
 	$deliveryCosts = null;
 
@@ -566,7 +567,22 @@
 						<textarea id="orderComment" name="orderComment" class="input-large" rows="4"></textarea>
 					</div>		
 				</div>				
+				<?php if($allowWaitress) : ?>
+				<div class="control-group">
+					<label class="control-label" for="allin">Optie all-in service:</label>			
+					<p>Indien u dit vakje aanvinkt bezorgen wij u een offerte voor een all-in service. (meerprijs 20% tot 35% van de afleverprijs) Wij arriveren in dit geval met onze mobiele keuken incl. serveermateriaal, professionele oven, koeling en voldoende personeel op uw feest. We serveren de hapjes op een vooraf bepaalde tijdsperiode. Wij arriveren natuurlijk vroeger.</p>
+					<div class="controls">	
+						<input type="checkbox" name="allin" class="input-large allin" id="allin" />
+					</div>		
+					
+					
+					
+				</div>
+				<div class="control-group">
+				 	<label class="control-label" for="deliveryElsewhere">Optie all-in service:</label>	
+				 </div>
 				
+				<?php endif; ?>				
 			</div><!-- span12 -->	
 		</div><!-- /row -->		
 		<div class="row-fluid">

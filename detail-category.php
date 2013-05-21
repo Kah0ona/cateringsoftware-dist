@@ -31,7 +31,7 @@
 	}
 
 	if($showCategoryDescription && $cat->categoryDesc != null && $cat->categoryDesc != "") {
-		echo '<p>'.$cat->categoryDesc.'</p>';
+		echo '<p>'.nl2br($cat->categoryDesc).'</p>';
 	} 
 
 	$dishes = $cat->Dish;

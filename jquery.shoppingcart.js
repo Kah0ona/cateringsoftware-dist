@@ -452,10 +452,9 @@
 	    
 	    //if productData is supplied, that will be used, otherwise, the productdata attr will be used.
 	    //if productData parameter is used, it is assumed the quantity is also supplied in the object itself
-	    addProduct : function (event, productData, shouldPersist) {
-	    	if (shouldPersist == null){
-		    	shouldPersist = true;
-	    	}
+	    //warn: does not call methods.persist, do this yourslef afterwards
+	    addProduct : function (event, productData) {
+
 	    	var quant=1;
 	    	
 	    	var product = null;
@@ -526,10 +525,7 @@
 			methods.logger("cart: ");
 			methods.logger(cartDataStore);
 			
-			if(shouldPersist){
-				methods.persist();
-			}
-			
+	
 			//add the item to each cart visually
 			cartPluginInstance.each(function(){
 				methods.logger("calling render");
@@ -635,11 +631,10 @@
 	    			var productClone = jQuery.extend(true, {}, product);//deepcopy
 				
 	    			productClone.quantity = parseInt(quant); 
-	    			methods.addProduct(null, productClone,false);
+	    			methods.addProduct(null, productClone);
 	    		}
 	    	});
 	    	
-   			methods.persist();
 
 	    },	    	    
 	    removeProduct : function (event) {
@@ -1230,11 +1225,13 @@
 				    var b = methods.addProduct(event);
 		    		if(b){
 					    methods.addExtraProducts(event); //aanvullingen
+					    
 					    methods.updatePrices();
 					    methods.calculateWeight();
 					    methods.calculateDeposit();
 					    $('.product-added').removeClass('hidden');
 				    }
+				    methods.persist();
 				    
 			   });
 	    	}
@@ -1255,6 +1252,8 @@
 						methods.calculateDeposit();
 						methods.createAutoClosingAlert('.product-added-popup',2000);
 					}
+					
+					methods.persist();
 			    });
 		    }
 		    	
