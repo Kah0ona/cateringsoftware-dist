@@ -160,7 +160,7 @@
 					 				<?php endif; ?>
 						 			<?php echo $d->dishName; ?>
 						 	
-						 		<a  data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
+						 		<a  data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' /><?php } ?>" 
 						 		   rel="popover" 
 							 	   data-placement="left"
 						 		   
@@ -190,7 +190,7 @@
 						 		<label for="flex-product-<?php echo $d->Dish_id; ?>">
 						 		   <?php echo getAmountForm($d->amount, 'amount-flex flex-product-'.$d->Dish_id, 'flex-product-'.$d->Dish_id); ?>&nbsp;
 							 	   <?php echo $d->dishName; ?>
-							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
+							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' /><?php } ?>"
 							 		   rel="popover" 
 								 	   data-placement="left"
 							 		   
@@ -220,7 +220,7 @@
 						 		<label for="extra-product-<?php echo $d->Dish_id; ?>" product-index="<?php echo $counter; ?>" product-type="product" sub-product-index="<?php echo $counter;?>">
 						 		   <?php echo getAmountForm($d->amount, 'amount-extra extra-product-'.$d->Dish_id, 'extra-product-'.$d->Dish_id); ?>&nbsp;
 							 	   <?php echo $d->dishName; ?><small>(€<?php echo money_format('%.2n', $d->dishPrice); ?> p.s.)</small>
-							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' />" 
+							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' /><?php } ?>"
 						 		   rel="popover" 
 						 		   data-trigger="hover"
 						 		   data-placement="left"
