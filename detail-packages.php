@@ -213,13 +213,17 @@
 
 				<div class="row-fluid datarow">
 					<div class="span12 extra-products product-data  ">
+					 <?php if($w->packagePrice == 0 || $w->packagePrice == "0" || $w->packagePrice == null) { ?>
+					 <h3>Stel uw menu samen:</h3>					 
+					 <?php } else { ?>
 					 <h3>Aanvullingen op dit menu:</h3>
+					 <?php } ?>
 						 <?php $counter = 0;
 						 	 foreach($w->Dish as $d){ ?>
 							<?php if($d->containmentType == 'aanvulling'){ ?>
 						 		<label for="extra-product-<?php echo $d->Dish_id; ?>" product-index="<?php echo $counter; ?>" product-type="product" sub-product-index="<?php echo $counter;?>">
 						 		   <?php echo getAmountForm($d->amount, 'amount-extra extra-product-'.$d->Dish_id, 'extra-product-'.$d->Dish_id); ?>&nbsp;
-							 	   <?php echo $d->dishName; ?><small>(€<?php echo money_format('%.2n', $d->dishPrice); ?> p.s.)</small>
+							 	   <?php echo $d->dishName; ?> <small>(€<?php echo money_format('%.2n', $d->dishPrice); ?> p.s.)</small>
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->imageDish; ?>' /><?php } ?>"
 						 		   rel="popover" 
 						 		   data-trigger="hover"
@@ -254,7 +258,7 @@
 						 		
 						 		<?php echo $d->materialName; ?>
 						 		
-						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' />" 
+						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover" 
    							 		   data-placement="left"
 							 		   data-trigger="hover"
@@ -273,14 +277,14 @@
 				<?php if($hasExtraMaterial) : ?>
 				<div class="row-fluid datarow">
 					<div class="span12 extra-materials product-data">
-					  <h3>Materiaal bijhuren:</h3>
+					  <h3>Extra materiaal:</h3>
 					  <?php $counter =0;
 					  		foreach($w->Material as $d){ ?>
 							<?php if($d->containmentTypeMaterial == 'aanvulling') { ?>
 						 		<label for="extra-material-<?php echo $d->Material_id; ?>" product-index="<?php echo $counter; ?>" product-type="material" sub-product-index="<?php echo $counter;?>">
 						 		   <?php echo getAmountForm($d->amountMaterial, 'amount-extra extra-material-'.$d->Material_id, 'extra-product-'.$d->Material_id); ?>&nbsp;
 							 	   <?php echo $d->materialName; ?> (€<?php echo money_format('%.2n', $d->materialPrice); ?> per stuk)
-							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' />" 
+							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover"
 							 		   data-placement="left"							 		    
 							 		   data-trigger="hover"
