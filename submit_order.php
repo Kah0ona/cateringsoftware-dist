@@ -26,6 +26,10 @@ function log2($msg){
 function doOrderLogic($post){
 	$ret = "";
 
+	if($post['deliveryType'] == null){
+		$post['deliveryType'] = 'bezorgen';
+	}
+
 	if($post['invoice']){
 		$post['orderStatus'] = 'geboekt';
 		$post['orderType'] = 'invoice';
