@@ -6,10 +6,8 @@
 * - Google Maps JS Api
 * Version: 0.5
 */
-(function( $ ) {
-	var cartDataStore = null; //TODO is this elegant? Refactor?
+;(function( $, window, document, undefined  ) {
 	var cartPluginInstance = null;
-	var settings = null;
 	var totalExclVat=0;
 	var totalInclVat=0;
 	var vatMap = {};
@@ -19,76 +17,79 @@
 	var elt;//the div to render everything on.
 	var deliveryCosts = {"price": 0}; //object with details about the delivery costs. based on address user filled out in checkout form.
 	var weightOfDishes = 0; //a number indicating how 'heavy' this order is. Used in calculating how many people this order is sufficient for.
-	var methods = {
+	
+	var pluginName = "shoppingCart",
+		defaults = {
+	      'detail' : false, //is this a detail page?
+	      'address' : 'some address', // used for google maps distance calculation
+	      'region': 'nl',
+	      'deliveryCosts' : [],
+	      'deliveryFormula' : false,//true is table, false is the other one
+	      'checkout_page' : '/checkout',
+	      'checkout_link' : 'Aanvraag versturen',
+	      'cart_text' : 'Mijn bestelling',
+	      'pickupAndDelivery' : false //false meanse: only delivery
+	    };	
+	
+	function ShoppingcartPlugin(element, options){
+		this.element = element;
+		this.settings = $.extend({}, defaults, options);
+		this._defaults = defaults;
+		this._name = pluginName;
+		this.init();
+	}
+	
+	ShoppingcartPlugin.prototype = {
 		//initializes the plugin
 	    init : function( options ) { 
-		    settings = $.extend( {
-		      'detail' : false, //is this a detail page?
-		      'address' : 'some address', // used for google maps distance calculation
-		      'region': 'nl',
-		      'deliveryCosts' : [],
-		      'deliveryFormula' : false,//true is table, false is the other one
-		      'checkout_page' : '/checkout',
-		      'checkout_link' : 'Aanvraag versturen',
-		      'cart_text' : 'Mijn bestelling',
-		      'pickupAndDelivery' : false //false meanse: only delivery
-		    }, options);
-		    cartPluginInstance = this;
-		    return this.each(function(){
-		    	methods.bindButtons();
-		    	elt = $(this);
+	    	this.bindButtons();
+	    	elt = $(this);
+			var self = this;
+			this.cartDataStore = [];
 
-		    	methods.load(function(jsonObj){
-
-				    dataFromCookie = jsonObj;
-				    var $this = $(this);
-			    	var data = $this.data('shoppingCart');
-			    	
-			    	if( data == null) {
-			    		//set the shoppingCart entry in the data object of jQuery
-			    		$(this).data('shoppingCart', dataFromCookie);
-			    		cartDataStore = $(this).data('shoppingCart');
-			    	}
-			    	methods.render();
-			    	methods.updatePrices();
-			    	methods.calculateWeight();
-			    	methods.calculateDeposit();
-			    	var compareToAddress = '';
-			    	$('.address-line').each(function(){
-			    		compareToAddress += " "+$(this).val();
-			    	});		    	
-			    	
-			    	if(methods.allAddressFieldsFilledOut()){
-				    	methods.calculateDistance(compareToAddress, function(){
-					    	methods.updatePrices();		
-					    });		    	
-				    }
-				    else{
-					    distance = 0;
-					    methods.updatePrices();							    
-				    }
-				    
-			    	methods.checkCoupon(function(disc, couponType){
-				    	methods.updatePrices();
-			    	});		    	
-			    	
-		     	    //if we are on a detail page, do the basic calculation of the totals of the flexible items of packages
-		     	    if(settings.detail) {
-					    methods.updateFlexibleItemsTotals();
-					}
-		    	});
-		    });
+	    	this.load(function(jsonObj){
+				this.cartDataStore = jsonObj;
+			
+		    	self.render();
+		    	self.updatePrices();
+		    	self.calculateWeight();
+		    	self.calculateDeposit();
+		    	var compareToAddress = '';
+		    	$('.address-line').each(function(){
+		    		compareToAddress += " "+$(this).val();
+		    	});		    	
+		    	
+		    	if(self.allAddressFieldsFilledOut()){
+			    	self.calculateDistance(compareToAddress, function(){
+				    	self.updatePrices();		
+				    });		    	
+			    }
+			    else{
+				    distance = 0;
+				    self.updatePrices();							    
+			    }
+			    
+		    	self.checkCoupon(function(disc, couponType){
+			    	self.updatePrices();
+		    	});		    	
+		    	
+	     	    //if we are on a detail page, do the basic calculation of the totals of the flexible items of packages
+	     	    if(self.settings.detail) {
+				    self.updateFlexibleItemsTotals();
+				}
+	    	});
 	    },
 	    
 	    allAddressFieldsFilledOut : function() {
  	        var ret = true;
  	        var deliveryElseWhere = $('#deliveryElsewhere').is(':checked');
+ 	        var self = this;
 		    $('.address-line').each(function(){
 		    	var x = $(this).val();
 		    	if(deliveryElseWhere){
 			    	if($(this).attr('id').indexOf("delivery") !== -1){
 				    	if(x === undefined || x === null || x == "") {
-				    		methods.logger("Not all address fields set");
+				    		self.logger("Not all address fields set");
 					    	ret = false;
 				    	}
 			    	}
@@ -96,7 +97,7 @@
 		    	else {
 		    		if($(this).attr('id').indexOf("delivery") === -1){
 				    	if(x === undefined || x === null || x == "") {
-				    		methods.logger("Not all address fields set");
+				    		self.logger("Not all address fields set");
 					    	ret = false;
 				    	}
 			    	}
@@ -104,7 +105,7 @@
 			});
 			
 			if(ret){
-	    		methods.logger("All address fields set");			 
+	    		this.logger("All address fields set");			 
 			}
 			return ret;
 	    },
@@ -122,7 +123,7 @@
 	    	
 	    	//assume we are on a detail page
 			
-	    	var package  = methods.lookupProduct($('.addtocart').attr('product-type'),0);
+	    	var package  = this.lookupProduct($('.addtocart').attr('product-type'),0);
 
 			if(package != null && package.products != null && package.products!=undefined){ 
 		    	for(var i = 0; i < package.products.length; i++){
@@ -145,8 +146,8 @@
 	    },
 	    calculateWeight : function(){
 	    	weightOfDishes = 0;
-		  	for(var i = 0; i < cartDataStore.length; i++){
-		  		var product = cartDataStore[i];
+		  	for(var i = 0; i < this.cartDataStore.length; i++){
+		  		var product = this.cartDataStore[i];
 		  		if(product.type == "package"){
 		  			if(product.products != null) {
 				  		for(var j = 0; j  < product.products.length; j++){
@@ -161,14 +162,14 @@
 		  			}
 		  		}
 		  	}  
-		  	methods.logger("Weight of order calculated to be: "+weightOfDishes);		
+		  	this.logger("Weight of order calculated to be: "+weightOfDishes);		
 		  	if(weightOfDishes > 0) {
 			  	$('#numPersonsDishes').html(
 			  		'<h4>U heeft reeds hapjes voor:</h4>'+
 			  		'<ul class="calories-list">'+
-			  		'<li><strong>Als hapje</strong> '+methods.getInfoButton('Als hapje',' Ideaal indien u een feestje geeft tussen 2 maaltijden door of laat op de avond pas hapjes wil serveren. Bv: tussen 15u en 17u of na 21u. ')+': '+parseInt(weightOfDishes/4)+' personen.</li>'+
-			  		'<li><strong>Iets meer dan...</strong> '+methods.getInfoButton('Iets meer dan...',' Ideale hoeveelheid voor iets meer dan een hapje, een feestje van 14u tot 17u30 of indien u de hapjes serveert vanaf 20u. ')+': '+parseInt(weightOfDishes/5)+' personen.</li>'+
-			  		'<li><strong>Maaltijd</strong> '+methods.getInfoButton('Volwaardige maaltijd','Indien uw gasten een volwaardige maaltijd verwachten is dit de aangewezen hoeveelheid. Bv: van 12u tot 15u of vanaf 17u tot 20u. ')+': '+parseInt(weightOfDishes/7)+' personen.</ul>'		  				  	
+			  		'<li><strong>Als hapje</strong> '+this.getInfoButton('Als hapje',' Ideaal indien u een feestje geeft tussen 2 maaltijden door of laat op de avond pas hapjes wil serveren. Bv: tussen 15u en 17u of na 21u. ')+': '+parseInt(weightOfDishes/4)+' personen.</li>'+
+			  		'<li><strong>Iets meer dan...</strong> '+this.getInfoButton('Iets meer dan...',' Ideale hoeveelheid voor iets meer dan een hapje, een feestje van 14u tot 17u30 of indien u de hapjes serveert vanaf 20u. ')+': '+parseInt(weightOfDishes/5)+' personen.</li>'+
+			  		'<li><strong>Maaltijd</strong> '+this.getInfoButton('Volwaardige maaltijd','Indien uw gasten een volwaardige maaltijd verwachten is dit de aangewezen hoeveelheid. Bv: van 12u tot 15u of vanaf 17u tot 20u. ')+': '+parseInt(weightOfDishes/7)+' personen.</ul>'		  				  	
 			  	); 
 
 			  	$('.itooltip').popover(); 	
@@ -198,12 +199,12 @@
 	    	
 			var json = $('.addtocart').attr("productdata");
 			
-			var package = methods.lookupProduct($('.addtocart').attr('product-type'),0);
+			var package = this.lookupProduct($('.addtocart').attr('product-type'),0);
 
 			if(package!=null && package.products != null && package.products!=undefined){ 
 		    	for(var i = 0; i < package.products.length; i++){
 		    		if(package.products[i].containmentType=='flexibel aantal'){
-		    			//methods.logger("quantity: "+package.products[i].title +" "+package.products[i].quantity);
+		    			//this.logger("quantity: "+package.products[i].title +" "+package.products[i].quantity);
 			    		tot += (multiplier * parseInt(package.products[i].quantity));
 		    		}
 		    	}
@@ -219,8 +220,8 @@
 			$('#validation-error').addClass('hidden');	    
 	    },
 	   	containsPackages : function()   {
-	   		for(var i = 0; i < cartDataStore.length ; i++){
-	    		if(cartDataStore[i].type == 'package'){
+	   		for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		if(this.cartDataStore[i].type == 'package'){
 	    			return true;
 	    		}
 	    	}
@@ -228,16 +229,16 @@
 	   	},
 	   	
 	   	containsProducts : function() { 
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-	    		if(cartDataStore[i].type == 'product'){
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		if(this.cartDataStore[i].type == 'product'){
 	    			return true;
 	    		}
 	    	}
 	    	return false;
 	   	},
 	   	containsMaterials : function() { 
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-	    		if(cartDataStore[i].type == 'material'){
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		if(this.cartDataStore[i].type == 'material'){
 	    			return true;
 	    		}
 	    	}
@@ -252,35 +253,33 @@
 		   	
 	   	},
 	    render : function(){
-	    	methods.logger("Rendering");
+	    	this.logger("Rendering");
 	    	var str;
 
-	    	if(cartDataStore.length == 0){
-   		    	methods.logger("Empty cart");
-
-	    		str=methods.getTemplate("<li><p>Het winkelwagentje is leeg.<p></li>");
-	    	
+	    	if(this.cartDataStore.length == 0){
+   		    	this.logger("Empty cart");
+	    		str=this.getTemplate("<li><p>Het winkelwagentje is leeg.<p></li>");
 	    	}
 	    	else {
-	    	   	methods.logger("Non-empty cart");
+	    	   	this.logger("Non-empty cart");
 
 		    	var packagesHtml="";
 		    	var productsHtml="";
 		    	var materialsHtml = "";	    	
-		    	if(methods.containsPackages())  
+		    	if(this.containsPackages())  
 					packagesHtml = '<li class="nav-header">Pakketten</li>';
 		    	
-		    	if(methods.containsProducts())
+		    	if(this.containsProducts())
 		    		productsHtml =  '<li class="nav-header">Losse gerechten</li>';
 		    		
-		    	if(methods.containsMaterials())
+		    	if(this.containsMaterials())
 		    		materialsHtml =  '<li class="nav-header">Los materiaal</li>';
 		    		
-		    	quantumDiscountHtml = methods.getDiscountTableHTML();
+		    	quantumDiscountHtml = this.getDiscountTableHTML();
 
 		    	//loop over cartDataStore, and fill up all lists
-		    	for(var i = 0; i < cartDataStore.length ; i++){
-		    		var obj = cartDataStore[i];
+		    	for(var i = 0; i < this.cartDataStore.length ; i++){
+		    		var obj = this.cartDataStore[i];
 					var removeclass = (obj.type == "package") ? 
 										'packageid="'+obj.Package_id+'"': 
 										obj.type == "product" ?
@@ -290,8 +289,8 @@
 					var title = obj.title;					
 					var selected_options_attr =''; 
 					if(obj.type=='product'){
-						methods.logger("obj:");
-						methods.logger(obj);
+						this.logger("obj:");
+						this.logger(obj);
 						if(obj.options != null && obj.options != undefined){
 							title += " (";
 							if(obj.options.length > 0){
@@ -333,20 +332,20 @@
 		    			materialsHtml += html;
 		    		}
 		    	} 
-		    	str = methods.getTemplate(packagesHtml+productsHtml+materialsHtml+quantumDiscountHtml);
+		    	str = this.getTemplate(packagesHtml+productsHtml+materialsHtml+quantumDiscountHtml);
 	    	}
 	    	
-	    	elt.html(str);
+	    	$(this.element).html(str);
 	    },
 	    getTemplate : function(content ){
 		    var str;
-			if(settings.cartDisplayMode == "dropdown")    {
-				str='<ul class="'+settings.cartClass+'">'+
+			if(this.settings.cartDisplayMode == "dropdown")    {
+				str='<ul class="'+this.settings.cartClass+'">'+
 						'<li class="divider-vertical"></li>'+
 						'<li class="dropdown">'+
-							'<a class="dropdown-toggle" data-toggle="dropdown" href="#" ><i class="icon-shopping-cart icon-white"></i> '+settings.cart_text+': € <span class="total-price"></span><b class="caret"></b></a>'+
+							'<a class="dropdown-toggle" data-toggle="dropdown" href="#" ><i class="icon-shopping-cart icon-white"></i> '+this.settings.cart_text+': € <span class="total-price"></span><b class="caret"></b></a>'+
 							'<ul class="dropdown-menu">'+
-								'<li><a href="'+settings.checkout_page+'">'+settings.checkout_link+' &rarr;</a></li>'+
+								'<li><a href="'+this.settings.checkout_page+'">'+this.settings.checkout_link+' &rarr;</a></li>'+
 								'<li class="divider"></li>'+
 								content+
 								'<li class="divider"></li>'+
@@ -356,13 +355,13 @@
 						'</li>'+
 					'</ul>';	
 			}
-		    else if(settings.cartDisplayMode == "block"){
+		    else if(this.settings.cartDisplayMode == "block"){
 				str='<ul class="cart-block">'+
 							content+
 							'<li class="divider"></li>'+
 							'<li>Totaal: € <span class="total-price"></span></li>'+
 							'<li class="divider"></li>'+
-							'<li><a href="'+settings.checkout_page+'">Afrekenen</a></li>'+
+							'<li><a href="'+this.settings.checkout_page+'">Afrekenen</a></li>'+
 					'</ul>';				    
 		    }
 		    else 
@@ -370,24 +369,24 @@
 		    return str;
 	    },
 	   getDiscountTableHTML : function() {
-		    if(settings.discountTable != null && settings.discountTable.length > 0){
+		    if(this.settings.discountTable != null && this.settings.discountTable.length > 0){
 		       return '<li class="discount-table-discount-cart divider"></li>'+
 		              "<li class='discount-table-discount-cart' style='margin-left: 15px;'>Quantumkorting: <span id='discount-table-discount'></span></li>";
 		    }
 		    else {
-			    methods.logger("No Discount table");
+			    this.logger("No Discount table");
 			    return "";
 		    }
 	    },
 	    calculateDiscountTableAndUpdateCart : function() {
-            if(settings.discountTable != null && settings.discountTable != undefined  && settings.discountTable.length > 0){
-	            for(var i = 0; i < settings.discountTable.length ; i++){
-				    var cur = settings.discountTable[i];
+            if(this.settings.discountTable != null && this.settings.discountTable != undefined  && this.settings.discountTable.length > 0){
+	            for(var i = 0; i < this.settings.discountTable.length ; i++){
+				    var cur = this.settings.discountTable[i];
 				    if((totalInclVat >= parseFloat(cur.fromAmount) && (cur.toAmount == undefined || cur.toAmount == null)) ||
 				    	totalInclVat >= parseFloat(cur.fromAmount) && totalInclVat < parseFloat(cur.toAmount)){
 				    	var disc = parseFloat(cur.tableDiscountPercentage)*100; 
 				    	if(disc > 0){
-				    		var formattedDisc =methods.formatPercentage(disc)+"%";					    	
+				    		var formattedDisc =this.formatPercentage(disc)+"%";					    	
 				    		$('#discount-table-row').removeClass('hidden');
 					    	$('#discount-table-discount').html(formattedDisc);	
 					    	$('.discount-table-field').html("<strong>"+formattedDisc+"</strong>");
@@ -411,11 +410,11 @@
 		    }
 		},
 	    analyzeDeliveryOptions : function() { //assumes take away is allowed, checks the shopping cart and checks if there is a product/package with 'deliver only' set.
-	      methods.logger("Analyzing cart... ");
+	      this.logger("Analyzing cart... ");
 		  var atleastOneTakeAwayOnly = false;
 		  var atleastOneDeliveryOnly = false;
-		  for(var i = 0; i < cartDataStore.length ; i++){
-		  	var product = cartDataStore[i];
+		  for(var i = 0; i < this.cartDataStore.length ; i++){
+		  	var product = this.cartDataStore[i];
 		  	 if(product.deliveryOptions == "alleen bezorgen"){
 			  	 atleastOneDeliveryOnly = true;
 		  	 }
@@ -428,14 +427,14 @@
 		  var elt = $('#invalid-selection');
 		  elt.addClass('hidden');
 		  var error = false;
-		  if($("#bezorgen").is(":checked") && settings.pickupAndDelivery){
+		  if($("#bezorgen").is(":checked") && this.settings.pickupAndDelivery){
 		  		if(atleastOneTakeAwayOnly) {
 					elt.removeClass('hidden').html('In uw bestelling zit minimaal één item dat alleen afgehaald kan worden, maar u heeft \'bezorgen\' aangevinkt.'+
 					' Los dit op door dit item te verwijderen, of \'afhalen\' te kiezen.');
 					error = true;
 		  		}			  
 		  }
-		  else if($('#afhalen').is(":checked") && settings.pickupAndDelivery) { //afhalen is checked
+		  else if($('#afhalen').is(":checked") && this.settings.pickupAndDelivery) { //afhalen is checked
 				if(atleastOneDeliveryOnly) {
 					elt.removeClass('hidden').html('In uw bestelling zit minimaal één item dat alleen bezorgd kan worden, maar u heeft \'afhalen\' aangevinkt.'+
 					' Los dit op door dit item te verwijderen, of \'bezorgen\' te kiezen.');
@@ -443,7 +442,7 @@
 				}			  
 		  }
 		  
-		  methods.logger("analyzed, error? :"+error);
+		  this.logger("analyzed, error? :"+error);
 
 		  return !error;
 	    },
@@ -451,7 +450,7 @@
 	    
 	    //if productData is supplied, that will be used, otherwise, the productdata attr will be used.
 	    //if productData parameter is used, it is assumed the quantity is also supplied in the object itself
-	    //warn: does not call methods.persist, do this yourslef afterwards
+	    //warn: does not call this.persist, do this yourslef afterwards
 	    addProduct : function (event, productData) {
 
 	    	var quant=1;
@@ -460,7 +459,7 @@
 	    	if(productData == null || productData == undefined){
 		       	var clicked = $(event.currentTarget);
 				
-				if(settings.detail){
+				if(this.settings.detail){
 					quant = parseInt($('#product-amount').val());
 					
 
@@ -468,19 +467,19 @@
 				
 				//passing things around by reference, so get the ref, and afterwards deepcopy it.
 		    	productRef = /*eval('('+clicked.attr("productdata")+')');*/
-		    			methods.lookupProduct(clicked.attr("product-type"), clicked.attr("product-index"));
+		    			this.lookupProduct(clicked.attr("product-type"), clicked.attr("product-index"));
 		 
 		    	//deepcopy it
 		    	product = jQuery.extend(true, {}, productRef);
 
 		    			
 
-		    	if(!settings.detail && product.type=='product'){
+		    	if(!this.settings.detail && product.type=='product'){
 			    	quant = parseInt(product.orderSize);
 		    	}
 		    	
-		    	if(product.type=='product' && settings.detail){
-		    		product = methods.addSelectedOptionsToProduct(product);
+		    	if(product.type=='product' && this.settings.detail){
+		    		product = this.addSelectedOptionsToProduct(product);
 		    	
 		    	}
 		    	
@@ -498,14 +497,14 @@
 			
 
 			//returns null if non-existent, and the obj from the cart it's equal to otherwise
-			var existingProduct = methods.productExists(product); 
+			var existingProduct = this.productExists(product); 
 			
 			//check if product exists in store
 			if(existingProduct != null){ //get the current quantity 
-				methods.logger("product exists");
+				this.logger("product exists");
 
 				if(existingProduct.type == 'package'){
-					methods.updateQuantityInPackage(product,existingProduct);
+					this.updateQuantityInPackage(product,existingProduct);
 				}
 
 				existingProduct.quantity = parseInt(existingProduct.quantity) + parseInt(product.quantity);				
@@ -514,29 +513,25 @@
 				}*/
 			}
 			else {
-			   methods.logger("product does not exist");
-			   if(cartDataStore == "EMPTY")
-			   		cartDataStore = [];
+			   this.logger("product does not exist");
+			   if(this.cartDataStore == "EMPTY")
+			   		this.cartDataStore = [];
 			   
-			   product = methods.multiplyProductsInPackageByX(quant, product);
-			   cartDataStore.push(product);
+			   product = this.multiplyProductsInPackageByX(quant, product);
+			   this.cartDataStore.push(product);
 			}
-			methods.logger("cart: ");
-			methods.logger(cartDataStore);
+			this.logger("cart: ");
+			this.logger(this.cartDataStore);
 			
-	
-			//add the item to each cart visually
-			cartPluginInstance.each(function(){
-				methods.logger("calling render");
-				methods.render($(this));			
-			});
+			
+			this.render($(this));
 			
 			return true;
 
 	    },
 	    addSelectedOptionsToProduct : function(product){
     		for(var i = 0; i < dishOptions.options.length ; i++){
-	    		if(methods.optionIsSelected(parseInt(dishOptions.options[i].ingredients_id))){
+	    		if(this.optionIsSelected(parseInt(dishOptions.options[i].ingredients_id))){
 	    			if(product.options == null || product.options == undefined){
 		    			product.options = [];
 	    			}
@@ -588,7 +583,7 @@
 
 			   		if(product.products != null){ //multiply by quant 
 					   for(var i = 0; i < product.products.length; i++){
-					   		//methods.logger(product.products[i].title+": "+product.products[i].quantity +" x "+quant)
+					   		//this.logger(product.products[i].title+": "+product.products[i].quantity +" x "+quant)
 					   		if(product.products[i].containmentType == 'flexibel aantal'){ //multiplication is already done, don't multiply
 						   		product.products[i].quantity = parseInt(product.products[i].quantity);	
 					   		}
@@ -617,27 +612,27 @@
 		    window.setTimeout(function() { alert.alert('close') }, delay);
    		},
 	    addExtraProducts : function () { //only relevant for detail view where there are product extras shown
-   			methods.logger("addExtraProducts");
-
+   			this.logger("addExtraProducts");
+   			var self = this;
 	    	$('.amount-extra').each(function(){
 	    		var quant = parseInt($(this).val());
 	    		if(quant > 0){
 
 	    			var pType = $(this).parent().attr("product-type");	    		
 	    			var pIndex = $(this).parent().attr("product-index");
-	    			var product = methods.lookupProduct(pType, pIndex); 
+	    			var product = self.lookupProduct(pType, pIndex); 
 	    			
 	    			var productClone = jQuery.extend(true, {}, product);//deepcopy
 				
 	    			productClone.quantity = parseInt(quant); 
-	    			methods.addProduct(null, productClone);
+	    			self.addProduct(null, productClone);
 	    		}
 	    	});
 	    	
 
 	    },	    	    
 	    removeProduct : function (event) {
-	    	methods.logger("Removing product");
+	    	this.logger("Removing product");
 	    	var clicked = $(event.currentTarget);
 	    	
 	    	var type;
@@ -657,11 +652,11 @@
 	    		id = clicked.attr("materialid");
 	    		    	
 	    		
-	    	methods.logger(type);
-	    	methods.logger(id);	
+	    	this.logger(type);
+	    	this.logger(id);	
 	    	
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-				var obj = cartDataStore[i];
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+				var obj = this.cartDataStore[i];
 
 	    		if((type == 'package' && id == obj.Package_id) ||
 			       ((type == 'product' || type=='material') && id == obj.Product_id)) {
@@ -679,24 +674,24 @@
 				       	    //to see if they ALL match. if so, remove product, else, don't continue;
 				       		var equal = true;
 					       	for(var j = 0; j < objLength; j++){
-						       	if(!methods.containsIngredient(selectedOptions, obj.options[j])){
+						       	if(!this.containsIngredient(selectedOptions, obj.options[j])){
 							       	equal = false;
 						       	}
 					       	}
 					       	if(equal) {
-						    	cartDataStore.splice(i,1);
+						    	this.cartDataStore.splice(i,1);
 						    	break;						       	
 					       	} //else continue iterating over the cart
 				       	}
 			       	}
 			       	else {
-				    	cartDataStore.splice(i,1);
+				    	this.cartDataStore.splice(i,1);
 				    	break;
 			       	}
 			    }
 	    	}
 	    	
-	    	methods.persist();
+	    	this.persist();
 
 	    	var parentRow = clicked.parents('.product-row');
 	    	parentRow.fadeOut();
@@ -711,8 +706,8 @@
 	    },
 	    calculateDeposit : function(){
 	    	var deposit = 0;
-			for(var i = 0; i < cartDataStore.length ; i++){
-	    		var obj = cartDataStore[i];
+			for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		var obj = this.cartDataStore[i];
 
 	    		
 	    		if(obj.type == "package"){
@@ -742,10 +737,10 @@
 		    		deposit += (parseFloat(obj.deposit) * parseInt(obj.quantity)) / parseInt(obj.orderSize);			
 	    		}
 	    	}
-	    	methods.logger("total deposit: "+deposit);
+	    	this.logger("total deposit: "+deposit);
 	    	
 	    	if(deposit > 0){
-	    		$('.deposit-total').html(methods.formatEuro(deposit));
+	    		$('.deposit-total').html(this.formatEuro(deposit));
 		    	$('.deposit-container').removeClass('hidden');
 	    	}
 	    
@@ -755,11 +750,11 @@
 			vatMap = {};
 	    	//loop over cartDataStore
 	    	totalInclVat=0;
-	    	methods.logger("updatePrices");
-	    	methods.logger(cartDataStore);
+	    	this.logger("updatePrices");
+	    	this.logger(this.cartDataStore);
 	    	
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-	    		var obj = cartDataStore[i];
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		var obj = this.cartDataStore[i];
 	    		var currentPrice = 0;
 	    		if(obj.type == 'product'){
 		    		//add the extra price of the options.
@@ -784,7 +779,7 @@
 	    		}
 	    		
 	    		//vatMap["x"+obj.VAT] += (obj.quantity * obj.price * obj.VAT);
-	    		methods.logger("updating VATMAP with: "+ parseFloat(obj.price));
+	    		this.logger("updating VATMAP with: "+ parseFloat(obj.price));
 	    		vatMap["x"+obj.VAT] += parseFloat(currentPrice);
 	    		
 	    	}
@@ -795,23 +790,23 @@
   			if($('#bezorgen').is(':checked') || $('.deliveryType').val() == 'bezorgen' ) {
 		    	$('#not-enough-ordered').addClass('hidden');
   			
-	  			if(!settings.deliveryFormula) { //if we are using the tabular form.
+	  			if(!this.settings.deliveryFormula) { //if we are using the tabular form.
 			    	//check in the settings.deliveryCosts what is the delivery price
 			    	
 			    	
 			    	var doNotDeliver = true;
 			    	var notEnoughOrdered = false;
-					for(var i = 0; i < settings.deliveryCosts.length; i++){
-						var min = parseInt(settings.deliveryCosts[i].minKm);
-						var max = parseInt(settings.deliveryCosts[i].maxKm);	
-						methods.logger(min+" "+max+" "+distance);
+					for(var i = 0; i < this.settings.deliveryCosts.length; i++){
+						var min = parseInt(this.settings.deliveryCosts[i].minKm);
+						var max = parseInt(this.settings.deliveryCosts[i].maxKm);	
+						this.logger(min+" "+max+" "+distance);
 						if(min <= distance && distance < max) { //if distance is within this range
-							if(totalInclVat < parseFloat(settings.deliveryCosts[i].minimumOrderPrice)){
+							if(totalInclVat < parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)){
 								if(distance > 0){
 									$('#not-enough-ordered').removeClass('hidden').html(
 									'We bezorgen op deze afstand ('+ 
-													methods.formatEuro(distance)+' km) vanaf een bedrag van €'+
-													methods.formatEuro(parseFloat(settings.deliveryCosts[i].minimumOrderPrice)));
+													this.formatEuro(distance)+' km) vanaf een bedrag van €'+
+													this.formatEuro(parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)));
 									doNotDeliver=true;
 									notEnoughOrdered = true;
 								    //hide submit buttons
@@ -821,17 +816,17 @@
 							}
 							else {
 								//update the table of the checkout 
-								deliveryCosts.price = parseFloat(settings.deliveryCosts[i].price);
+								deliveryCosts.price = parseFloat(this.settings.deliveryCosts[i].price);
 								$('.submit-controls').removeClass('disabled');
 								$('#not-enough-ordered').addClass('hidden');
-								$('.deliverycosts-field').html("<strong>€ "+methods.formatEuro(delPrice)+"</strong>");
+								$('.deliverycosts-field').html("<strong>€ "+this.formatEuro(delPrice)+"</strong>");
 								doNotDeliver = false;						
 							}
 						}
 					}
 				/*
 					if(doNotDeliver && !notEnoughOrdered){
-						methods.logger("DO NOT DELIVER, OUT OF RANGE");
+						this.logger("DO NOT DELIVER, OUT OF RANGE");
 						$('#not-enough-ordered').removeClass('hidden').html(
 							'We bezorgen helaas niet op deze afstand.');
 						doNotDeliver=true;
@@ -842,9 +837,9 @@
 				else { //use the formula, which uses a different calculation structure.
 		
 				
-					var delivery = settings.deliveryCosts[0];
-					methods.logger("delivery object");
-					methods.logger(delivery);
+					var delivery = this.settings.deliveryCosts[0];
+					this.logger("delivery object");
+					this.logger(delivery);
 					
 					var delCosts = 0;
 					
@@ -879,7 +874,7 @@
 					}
 					else { //within reach, now check for
 						if(totalInclVat > freeDelivery) { //delcosts = 0, since someone ordered enough
-							methods.logger("free delivery, since total > freedelivery threshold");
+							this.logger("free delivery, since total > freedelivery threshold");
 							delCosts = 0;
 						}
 					
@@ -889,8 +884,8 @@
 									.removeClass('hidden')
 									.html(
 										'<strong>Let op:</strong> We bezorgen op deze afstand ('+ 
-														methods.formatEuro(distance)+' km) vanaf een bestelbedrag van €'+
-														methods.formatEuro(minOrderPrice));
+														this.formatEuro(distance)+' km) vanaf een bestelbedrag van €'+
+														this.formatEuro(minOrderPrice));
 								doNotDeliver=true;
 							    //hide submit buttons
 							    delCosts = 0;
@@ -921,7 +916,7 @@
 	    	
 	    	
 	    	
-	    	if(!methods.analyzeDeliveryOptions()){
+	    	if(!this.analyzeDeliveryOptions()){
 		    	$('.submit-controls').addClass('disabled');
 	    	}
 	    	
@@ -929,14 +924,14 @@
 	    		vatMap["x0.21"] = 0;
 	    		
   			vatMap["x0.21"] += parseFloat(deliveryCosts.price);
-  			methods.logger(deliveryCosts)
-	    	methods.logger("deliveryCosts.price: " + deliveryCosts.price);
+  			this.logger(deliveryCosts)
+	    	this.logger("deliveryCosts.price: " + deliveryCosts.price);
 	    	totalInclVat += parseFloat(deliveryCosts.price);
 	    	
 	    	
-	    	if(settings.pricesAreInclVat){
+	    	if(this.settings.pricesAreInclVat){
 		    	totalExclVat = totalInclVat;
-		    	methods.logger(vatMap);
+		    	this.logger(vatMap);
 		    	for(var perc in vatMap){
 		    	    var p = parseFloat(perc.substr(1));
 		    		totalExclVat -= parseFloat(vatMap[perc]) - (parseFloat(vatMap[perc]) / (1+p));
@@ -952,7 +947,7 @@
 			    totalExclVat = totalInclVat;
 			    
 			    //modify totalInclVat to be the REAL totalInclVat, by adding the vatmap's contents
-			    methods.logger(vatMap);
+			    this.logger(vatMap);
 		    	for(var perc in vatMap){
 		    	    var p = parseFloat(perc.substr(1));
 		    		totalInclVat += parseFloat(vatMap[perc] * p);
@@ -965,30 +960,30 @@
 			    }			    
 
 		    }
-	    	methods.logger('setting price: '+methods.formatEuro(totalInclVat));
+	    	this.logger('setting price: '+this.formatEuro(totalInclVat));
 			
-			var discountTableDiscount = methods.calculateDiscountTableAndUpdateCart();
+			var discountTableDiscount = this.calculateDiscountTableAndUpdateCart();
 			
 			if(discountTableDiscount == null || discountTableDiscount == undefined)
 				discountTableDiscount = 0.0;
 			
 			var tot = 0;
-			if(settings.pricesAreInclVat){
+			if(this.settings.pricesAreInclVat){
 				tot = totalInclVat;
 			}
 			else {
 				tot = totalExclVat;
 			}
 			
-	    	$('.total-price').html(methods.formatEuro(tot * (1 - discountTableDiscount)));
+	    	$('.total-price').html(this.formatEuro(tot * (1 - discountTableDiscount)));
 
 				
 			if(totalInclVat == 0) {
 				totalExclVat = 0;
 			}
 			
-			$('.deliverycosts-field').html("<strong>€ "+methods.formatEuro(deliveryCosts.price)+"</strong>");
-			$('.subtotal-field').html("<strong>€ "+methods.formatEuro(totalExclVat)+"</strong>");
+			$('.deliverycosts-field').html("<strong>€ "+this.formatEuro(deliveryCosts.price)+"</strong>");
+			$('.subtotal-field').html("<strong>€ "+this.formatEuro(totalExclVat)+"</strong>");
 			
 			
 
@@ -1006,24 +1001,24 @@
 				totalWithCouponDiscount = totalInclVat;
 			}					
 			//checkout page field
-			$('.total-field').html("<strong>€ "+methods.formatEuro(totalWithCouponDiscount * (1-discountTableDiscount))+"</strong>");	
+			$('.total-field').html("<strong>€ "+this.formatEuro(totalWithCouponDiscount * (1-discountTableDiscount))+"</strong>");	
 
 			
 			
 			for(var perc in vatMap){					
 				var sel = String(perc).replace('.','_');
-				$('.vat-field-'+sel).html('<strong>€ '+methods.formatEuro(vatMap[perc])+'</strong>');
+				$('.vat-field-'+sel).html('<strong>€ '+this.formatEuro(vatMap[perc])+'</strong>');
 			}
 	    },	
 	    clearCart : function(){
-	    	methods.logger("Clearing cart!");
-	    	cartDataStore = [];
-	    	methods.persist();
-	    	methods.render();
-	    	methods.updatePrices();
+	    	this.logger("Clearing cart!");
+	    	this.cartDataStore = [];
+	    	this.persist();
+	    	this.render();
+	    	this.updatePrices();
 	    },    
 	    removeProductFromCheckoutPage : function(event){
-	    	methods.logger("removeProductFromCheckoutPage");
+	    	this.logger("removeProductFromCheckoutPage");
 			event.preventDefault();
  	    	var clicked = $(event.currentTarget);
  	    	
@@ -1053,8 +1048,8 @@
 	    	var price = 0;
 
 	    	//loop over cartDataStore
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-	    		var x = cartDataStore[i];
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+	    		var x = this.cartDataStore[i];
 	    		price+= x.price * x.quantity;
 	    	}
 	    	
@@ -1064,27 +1059,27 @@
 	    	
 	    	
 	    	
-	    	methods.logger('setting price: '+methods.formatEuro(price));
-	    	var tableDiscount = methods.calculateDiscountTableAndUpdateCart();
-	    	methods.logger("TABLE DISCOUNT " +tableDiscount);
+	    	this.logger('setting price: '+this.formatEuro(price));
+	    	var tableDiscount = this.calculateDiscountTableAndUpdateCart();
+	    	this.logger("TABLE DISCOUNT " +tableDiscount);
 	    	var discountFactor = 1 - (tableDiscount + (parseFloat(discount) / 100.0));
-	    	methods.logger("DISCOUNT FACTOR " + discountFactor);
+	    	this.logger("DISCOUNT FACTOR " + discountFactor);
 	    	
-	    	var tot = settings.pricesAreInclVat ? totalInclVat : totalExclVat;
+	    	var tot = this.settings.pricesAreInclVat ? totalInclVat : totalExclVat;
 	    	
 	    	
 	    	var t = tot * discountFactor;
 	    	
 	 
 	    	
-	    	methods.logger("TOTAL "+t);
-	    	$('.total-price').html(methods.formatEuro(t));
+	    	this.logger("TOTAL "+t);
+	    	$('.total-price').html(this.formatEuro(t));
 
 	    },
 	    /* returns null if product doesnt exist in cart, and returns the product from the cart that is equal to the passed in object otherwise */
 	    productExists : function(product){
-	    	for(var i = 0; i < cartDataStore.length ; i++){
-	    	   var obj = cartDataStore[i];
+	    	for(var i = 0; i < this.cartDataStore.length ; i++){
+	    	   var obj = this.cartDataStore[i];
 	    	   if((product.type == 'package' 
 		    		 && product.Package_id == obj.Package_id) ||
 		    	  	product.type=='material'
@@ -1095,7 +1090,7 @@
 		    	else if (product.type=='product' 
 		    		 && product.Product_id == obj.Product_id){
 			    	 //if it is a product, first check if there is an extra option configuration, AND one with this option config does not exist.
-			    	if(methods.checkDishOptionsAreEqual(product, obj))
+			    	if(this.checkDishOptionsAreEqual(product, obj))
 			    		return obj;
 			    	//else continue to loop the cart
 			    	
@@ -1136,9 +1131,9 @@
 			//button with the latest settings from the configuration form. 
 			//only applies to detail pages where there are more configuration options.
 			var clicked = $(event.currentTarget);
-			//methods.logger(clicked.attr("productdata"));
+			//this.logger(clicked.attr("productdata"));
 	    	var product = //eval('('+clicked.attr("productdata")+')');
-	    				methods.lookupProduct(clicked.attr("product-type"), clicked.attr("product-index"));
+	    				this.lookupProduct(clicked.attr("product-type"), clicked.attr("product-index"));
 
 	    	var q = $('#product-amount').val();
 			product.quantity = parseInt(q);
@@ -1165,10 +1160,10 @@
 				}
 				
 			});
-			methods.logger(product);
-		//	var product2 = methods.deepCopy(product);
-		//	methods.logger("prod2");
-		//	methods.logger(product2);
+			this.logger(product);
+		//	var product2 = this.deepCopy(product);
+		//	this.logger("prod2");
+		//	this.logger(product2);
 			var jsonString = $.toJSON(product);
 			//var jsonString = jsDump.parse(product);
 			
@@ -1177,7 +1172,7 @@
 		
 		validateForm : function(){
 			$('#validation-error').addClass('hidden');			    
-			var left = methods.checkFlexItemsTotals();
+			var left = this.checkFlexItemsTotals();
 			if(left < 0){
 			 	$('#validation-error').removeClass('hidden');
 				return false;
@@ -1188,71 +1183,72 @@
 		},
 	    //binds all the buttons to the respective event
 	    bindButtons : function(){
+	    	 var self = this;
 	    	 $('body').on("change.shoppingCart",".deliveryType", function(event){
-	    	     methods.updatePrices();
- 		    	 methods.calculateDeposit();
+	    	     self.updatePrices();
+ 		    	 self.calculateDeposit();
 	    	 });
 			 $("body").on("click.shoppingCart","a.removefromcart", function(event){
 		    	event.preventDefault();
-		    	methods.removeProduct(event);
-		    	methods.updateCartTotalPrice();
-    			methods.updatePrices();
-		    	methods.calculateWeight();
-		    	methods.calculateDeposit();
+		    	self.removeProduct(event);
+		    	self.updateCartTotalPrice();
+    			self.updatePrices();
+		    	self.calculateWeight();
+		    	self.calculateDeposit();
 				event.stopPropagation();
 		    });
 		     $("body").on('click.shoppingCart', 'a.removefromcart-checkout', function(event){
-		    	methods.removeProduct(event);
-		    	methods.removeProductFromCheckoutPage(event);
+		    	self.removeProduct(event);
+		    	self.removeProductFromCheckoutPage(event);
 
-    			methods.updatePrices();
-    			methods.calculateWeight();
-		    	methods.calculateDeposit();		    	
+    			self.updatePrices();
+    			self.calculateWeight();
+		    	self.calculateDeposit();		    	
 		    });	 
 	    
-	    	if(settings.detail){
+	    	if(this.settings.detail){
 			    $('.addtocart').on('click.shoppingCart', function(event){
 			    	event.preventDefault();
 		         	$('.product-size-wrong').addClass('hidden');
 		         	$('.product-added').addClass('hidden');
 		         	
-				    if(!methods.validateForm())
+				    if(!self.validateForm())
 				    	return;
 				    
-					methods.updateProductDataInDOM(event);
+					self.updateProductDataInDOM(event);
 									    	
-				    var b = methods.addProduct(event);
+				    var b = self.addProduct(event);
 		    		if(b){
-					    methods.addExtraProducts(event); //aanvullingen
+					    self.addExtraProducts(event); //aanvullingen
 					    
-					    methods.updatePrices();
-					    methods.calculateWeight();
-					    methods.calculateDeposit();
+					    self.updatePrices();
+					    self.calculateWeight();
+					    self.calculateDeposit();
 					    $('.product-added').removeClass('hidden');
 				    }
-				    methods.persist();
+				    self.persist();
 				    
 			   });
 	    	}
 	    	else {
 			    $('.addtocart').on('click.shoppingCart', function(event){
-			    	methods.logger("Adding product");
+			    	self.logger("Adding product");
 			    	event.preventDefault();
 				
-				    if(!methods.validateForm()){
-				    	methods.logger("Invalid form, returning");
+				    if(!self.validateForm()){
+				    	self.logger("Invalid form, returning");
 				    	return;
 				    }
 				    			    	
-				    var b = methods.addProduct(event);
+				    var b = self.addProduct(event);
 				    if(b){
-						methods.updatePrices();		
-						methods.calculateWeight();		
-						methods.calculateDeposit();
-						methods.createAutoClosingAlert('.product-added-popup',2000);
+						self.updatePrices();		
+						self.calculateWeight();		
+						self.calculateDeposit();
+						self.createAutoClosingAlert('.product-added-popup',2000);
 					}
 					
-					methods.persist();
+					self.persist();
 			    });
 		    }
 		    	
@@ -1271,37 +1267,37 @@
 
 		    	if(compareToAddress2.length > 0 && $('#deliveryElsewhere').is(':checked')){
 			    	compareToAddress = compareToAddress2;
-			    	methods.logger("Distance calc: Using address 'elsewhere'");
+			    	self.logger("Distance calc: Using address 'elsewhere'");
 			    }
 			    else {
-				    methods.logger("Distance calc: Using normal delivery address");
+				    self.logger("Distance calc: Using normal delivery address");
 			    }
-			    if(methods.allAddressFieldsFilledOut()){
-			    	methods.calculateDistance(compareToAddress, function(){
-			   			methods.updatePrices();		    	
+			    if(self.allAddressFieldsFilledOut()){
+			    	self.calculateDistance(compareToAddress, function(){
+			   			self.updatePrices();		    	
 			    	});
 		    	}
 		    	else {
 					distance = 0;
-					methods.updatePrices();							    
+					self.updatePrices();							    
 				}
 		    });	   
 		    
 		    
 		    $('.amount-flex').bind('change.shoppingCart',function(){
-		    	methods.updateFlexibleItemsTotals();
-		    	methods.validateForm();
+		    	self.updateFlexibleItemsTotals();
+		    	self.validateForm();
 		    	
 		    });
 		    
 		    $('#product-amount').bind('change.shoppingCart',function(){
-		    	methods.updateFlexibleItemsTotals();
-		    	methods.validateForm();
+		    	self.updateFlexibleItemsTotals();
+		    	self.validateForm();
 		    });
 		    
 		    $('#coupon').bind('change.shoppingCart', function(){
-		    	methods.checkCoupon(function(){
-		    		methods.updatePrices();
+		    	self.checkCoupon(function(){
+		    		self.updatePrices();
 		    	});
 		    });
 		    
@@ -1350,26 +1346,27 @@
 	    calculateDistance : function(cptaddr, callback) {
 	    	//calc distance between store and cptaddr (compare to address)
 	    	var queryData = {
-			  origin: settings.address,
+			  origin: this.settings.address,
 			  destination: cptaddr,
 			  travelMode: google.maps.TravelMode.DRIVING,
 			  unitSystem: google.maps.UnitSystem.METRIC,
 			  avoidHighways : false,
 			  avoidTolls: false,
-			  region: settings.region
+			  region: this.settings.region
 			}
 					
 			var directionsService = new google.maps.DirectionsService();
 			distance = -1;
+			var self = this;
 	        directionsService.route(queryData, function(response, status) {
 	            if (status == google.maps.DirectionsStatus.OK) {
 	            	distance = parseInt(response.routes[0].legs[0].distance.value) / 1000;
-	            	methods.logger("Distance found: "+distance+" km");
+	            	this.logger("Distance found: "+distance+" km");
 	            	
 	            }
 				else {
-					methods.logger("Something went wrong, or address not found: "+status)
-					methods.logger(response);
+					self.logger("Something went wrong, or address not found: "+status)
+					self.logger(response);
 				}            
    	           	if(callback != null && callback != undefined)
 	            	callback.call(distance);
@@ -1379,7 +1376,7 @@
 	    },
 	  	setDiscount : function(disc){
 			discount = disc; 
-			methods.updateCartTotalPrice();
+			this.updateCartTotalPrice();
 			if(disc == 0 || couponType != "normaal")
 				$('#discount-row').addClass('hidden');
 			else {	
@@ -1387,62 +1384,38 @@
 			}
 
 			$('.discount-field').html('<strong>'+disc+'%</strong>');
-			$('.total-field').html("<strong>€ "+methods.formatEuro(totalInclVat * (1 - (discount / 100)))+"</strong>");						
+			$('.total-field').html("<strong>€ "+this.formatEuro(totalInclVat * (1 - (discount / 100)))+"</strong>");						
 			
 	  	},
 	    //saves the current data store object in cookie
 	    persist : function(){
-	    	/*
-	    	var exDate=new Date();
-			exDate.setTime(exDate.getTime()+ 1000*60*60*24); //24 hours
-			//exDate.setUTCMilliSeconds(999); //todo check timezone
-			
-			var jsonString = $.toJSON(cartDataStore);
-			methods.logger("Persisting jsonString: ");
-			methods.logger(jsonString);
-			var c_value=escape(jsonString) + "; expires="+exDate.toUTCString()+'; path=/';
-			document.cookie="shoppingCart" + "=" + c_value;	
-			*/
-			
-			//var js = $.toJSON(cartDataStore);
-			if(cartDataStore.length == 0){
-				cartDataStore="EMPTY";
+			if(this.cartDataStore.length == 0){
+				this.cartDataStore="EMPTY";
 			}
-
+			var self=this;
 			$.ajax({
-				url : settings.session_url,
+				url : this.settings.session_url,
 				type: 'POST',
-				data: {"shoppingCart" : cartDataStore},
+				data: {"shoppingCart" : this.cartDataStore},
 				success: function (jsonObj, textStatus, jqXHR){
-					methods.logger("Persisted: ")
-					methods.logger(jsonObj);
+					self.logger("Persisted: ")
+					self.logger(jsonObj);
 				},
 				dataType: 'json'
 			});
 			
 	    },
-	   
 	    //loads the state from cookie, and returns an object with the contents of the shopping cart
 	    load : function(callback){
-		  /*var i,x,y,ARRcookies=document.cookie.split(";");
-		  for (i=0; i<ARRcookies.length; i++) {
-			  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-			  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-			  x=x.replace(/^\s+|\s+$/g,"");
-			  if(x == "shoppingCart"){
-		      	return eval('('+unescape(y)+')'); //return the stored json object
-		      }
-		
-		  }
-		  return [];*/
+		  var self = this;
 		  $.ajax({
-				url: settings.session_url,
+				url: this.settings.session_url,
 				type: 'GET',
 				data: {"action" : "load"},
 				success: function (jsonObj, textStatus, jqXHR){
-					methods.logger("Loaded: ");
-					methods.logger(jsonObj);
-					callback.call(this, jsonObj);
+					self.logger("Loaded: ");
+					self.logger(jsonObj);
+					callback.call(self, jsonObj);
 				},
 				dataType: 'json'
 			});
@@ -1482,16 +1455,11 @@
 		}
 	};
 
-	$.fn.shoppingCart = function( method ) {
-		
-		//the 'this' keyword is a jQuery object
-	    // Method calling logic
-	    if ( methods[method] ) {
-	      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-	    } else if ( typeof method === 'object' || ! method ) {
-	      return methods.init.apply( this, arguments );
-	    } else {
-	      $.error( 'Method ' +  method + ' does not exist on jQuery.shoppingCart' );
-	    }    
+	$.fn[ pluginName ] = function ( options ) {
+		return this.each(function() {
+			if ( !$.data( this, "plugin_" + pluginName ) ) {
+					$.data( this, "plugin_" + pluginName, new ShoppingcartPlugin( this, options ) );
+			}
+		});
 	};
-})( jQuery );
+})( jQuery, window, document );
