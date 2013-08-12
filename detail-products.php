@@ -84,7 +84,7 @@
 				<div class="span12"><p><a class="backtooverview" href="javascript:history.back()">&larr; terug naar overzicht</a></p></div>
 			</div>
 			<div class="row-fluid">		
-			   <?php if($w->imageDish != null) { $imgSpan = '8'; $imgSpan2='4'; ?>
+			   <?php if($w->imageDish != null && $w->imageDish != "" && $w->imageDish != "uploads/Dish/") { $imgSpan = '8'; $imgSpan2='4'; ?>
 				   <div class="productimage span<?php echo $imgSpan; ?>"> 
 					  <img alt="<?php echo $w->dishName; ?>" src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imageDish; ?>">
 	

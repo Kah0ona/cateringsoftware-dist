@@ -20,7 +20,6 @@
 	var deliveryCosts = {"price": 0}; //object with details about the delivery costs. based on address user filled out in checkout form.
 	var weightOfDishes = 0; //a number indicating how 'heavy' this order is. Used in calculating how many people this order is sufficient for.
 	var methods = {
-		
 		//initializes the plugin
 	    init : function( options ) { 
 		    settings = $.extend( {
@@ -1355,6 +1354,8 @@
 			  destination: cptaddr,
 			  travelMode: google.maps.TravelMode.DRIVING,
 			  unitSystem: google.maps.UnitSystem.METRIC,
+			  avoidHighways : false,
+			  avoidTolls: false,
 			  region: settings.region
 			}
 					
@@ -1375,8 +1376,6 @@
 
 			});			
 	    	
-	    	
-  			
 	    },
 	  	setDiscount : function(disc){
 			discount = disc; 

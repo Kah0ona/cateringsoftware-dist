@@ -161,7 +161,7 @@
 						 		       id="pkg-row-<?php echo $pkg->Package_id; ?>"
 						 		   data-original-title="<?php echo $pkg->title; ?>">info</a>
 						 		   
-						 		<a href="#"	class="label label-info  info-click" id="pkg-row-<?php echo $pkg->Package_id; ?>">   
+						 		<a href="#"	class="label label-info  details-button info-click" id="pkg-row-<?php echo $pkg->Package_id; ?>">   
 						 		details
 						 		</a>
 							
