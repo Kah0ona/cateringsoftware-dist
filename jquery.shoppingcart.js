@@ -4,7 +4,7 @@
 * Plugin dependencies: 
 * - JQuery-JSON: http://code.google.com/p/jquery-json/
 * - Google Maps JS Api
-* Version: 0.5
+* Version: 1.0
 */
 ;(function( $, window, document, undefined  ) {
 	var cartPluginInstance = null;
@@ -1189,6 +1189,7 @@
  		    	 self.calculateDeposit();
 	    	 });
 			 $("body").on("click.shoppingCart","a.removefromcart", function(event){
+			 	self.logger("a.removefromcart clicked");
 		    	event.preventDefault();
 		    	self.removeProduct(event);
 		    	self.updateCartTotalPrice();
@@ -1253,6 +1254,7 @@
 		    }
 		    	
 		    $('.address-line, .address-line-elsewhere').bind('change.shoppingCart', function(){
+				console.log('xxx');
 		    	var compareToAddress = '';
 		    	var compareToAddress2="";
 		    	
@@ -1358,6 +1360,7 @@
 			var directionsService = new google.maps.DirectionsService();
 			distance = -1;
 			var self = this;
+			console.log(directionsService);
 	        directionsService.route(queryData, function(response, status) {
 	            if (status == google.maps.DirectionsStatus.OK) {
 	            	distance = parseInt(response.routes[0].legs[0].distance.value) / 1000;
