@@ -84,23 +84,18 @@
  	        var ret = true;
  	        var deliveryElseWhere = $('#deliveryElsewhere').is(':checked');
  	        var self = this;
-		    $('.address-line').each(function(){
+ 	        var selector = '';
+ 	        if(deliveryElseWhere) {
+	 	        selector = '.address-line-elsewhere';
+ 	        }
+ 	        else {
+	 	        selector = '.address-line';	 	        
+ 	        }
+		    $(selector).each(function(){
 		    	var x = $(this).val();
-		    	if(deliveryElseWhere){
-			    	if($(this).attr('id').indexOf("delivery") !== -1){
-				    	if(x === undefined || x === null || x == "") {
-				    		self.logger("Not all address fields set");
-					    	ret = false;
-				    	}
-			    	}
-		    	}
-		    	else {
-		    		if($(this).attr('id').indexOf("delivery") === -1){
-				    	if(x === undefined || x === null || x == "") {
-				    		self.logger("Not all address fields set");
-					    	ret = false;
-				    	}
-			    	}
+		    	if(x === undefined || x === null || x == "") {
+		    		self.logger("Not all address fields set");
+			    	ret = false;
 		    	}
 			});
 			

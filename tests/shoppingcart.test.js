@@ -105,6 +105,35 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			
 		});
 		
+		
+		it('should use delivery address lines in the calculation of the distance, and all those field should be filled out first AND the "deliver elsewhere" checkbox should be checked ', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route');
+		
+			$('<div id="wrap"></div>').appendTo('body');	
+			$('<input type="checkbox" name="deliveryElsewhere" class="input-large address-line-elsewhere" id="deliveryElsewhere" checked="checked">').appendTo('#wrap');			
+			$('<input type="text" name="deliveryStreet" class="input-large address-line-elsewhere valid" id="deliveryStreet">').appendTo('#wrap');
+			$('<input type="text" name="deliveryNumber" class="input-large address-line-elsewhere valid" id="deliveryNumber">').appendTo('#wrap');
+			$('<input type="text" name="deliveryZipcode" class="input-large address-line-elsewhere valid" id="deliveryZipcode">').appendTo('#wrap');
+			$('<input type="text" name="deliveryCity" class="input-large address-line-elsewhere valid" id="deliveryCity">').appendTo('#wrap');
+			$('<input type="text" name="deliveryName" class="input-large address-line valid" id="deliveryName">').appendTo('#wrap');			
+
+			$('#shoppingcart').shoppingCart({cartDisplayMode : 'block'});
+
+			expect(google.maps.DirectionsService.prototype.route).not.toHaveBeenCalled();
+			$('#deliveryStreet').val('Hugo de grootstraat');
+			$('#deliveryZipcode').val('2518EE');
+			$('#deliveryNumber').val('62b');
+			
+			$('.address-line-elsewhere').change();
+			expect(google.maps.DirectionsService.prototype.route).not.toHaveBeenCalled();
+			$('#deliveryCity').val('Den Haag');
+			$('.address-line-elsewhere').change();
+			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
+			$('#wrap').remove();
+
+		});
+		
+		
 		var fakeGoogleMapsReply = function(x,y){
 				//console.log(y);
 				y.call(this, { routes : [{ legs: [{distance : {value: 10000000}}]}]}, google.maps.DirectionsStatus.OK);
@@ -140,11 +169,11 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReply);
 			
 			buildDom( [
-									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
-									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
-									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
-									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
-								  ]);
+					   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
+					   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
+					   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
+					   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
+				  ]);
 
 			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
 			
@@ -160,10 +189,10 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 		it('should show an error message when the distance is within reach of the delivery table, but there is not enough ordered', function(){
 			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReplyWithinReach);
 			buildDom( [
-									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
-									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
-									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
-									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
+					   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
+					   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
+					   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
+					   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
 			]);
 			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
 
@@ -194,6 +223,9 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			$('#wrap').remove();
 
 		});
+		
+		
+	
 		
 	});
 });
