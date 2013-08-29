@@ -93,7 +93,6 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 
 			expect(google.maps.DirectionsService.prototype.route).not.toHaveBeenCalled();
 			$('#city').val('Den Haag');
-			$('#city').val('Den Haag');
 			$('#postcode').val('2518EE');
 			$('#number').val('62b');
 
@@ -105,5 +104,94 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			$('#wrap').remove();
 			
 		});
+		
+		var fakeGoogleMapsReply = function(x,y){
+				//console.log(y);
+				y.call(this, { routes : [{ legs: [{distance : {value: 10000000}}]}]}, google.maps.DirectionsStatus.OK);
+		};
+		var fakeGoogleMapsReplyWithinReach = function(x,y){
+				//console.log(y);
+				y.call(this, { routes : [{ legs: [{distance : {value: 10000}}]}]}, google.maps.DirectionsStatus.OK);
+		};
+		
+		var buildDom = function(delCosts){
+			$('<div id="wrap"></div>').appendTo('body');	
+			$('<input type="hidden" name="deliveryType"  class="deliveryType input-large" value="bezorgen" />').appendTo('#wrap');
+			$('<input type="text"  name="street" class="input-large address-line" id="street">').appendTo('#wrap');
+			$('<input type="text" name="city" class="input-large address-line" id="city">').appendTo('#wrap');
+			$('<input type="text" name="postcode" maxlength="7" class="input-large span3 address-line" id="postcode">').appendTo('#wrap');
+			$('<input type="text" name="number" maxlength="7" class="input-large span3 address-line" id="number">').appendTo('#wrap');
+			$('<input type="text" name="country" class="input-large address-line" id="country">').appendTo('#wrap');			
+			$('<p id="not-enough-ordered" class="hidden alert alert-error"></p>').appendTo('#wrap');
+
+			$('#shoppingcart').shoppingCart({cartDisplayMode : 'block',
+				"deliveryCosts" : delCosts
+			});
+
+			$('#street').val('balistraat');
+			$('#city').val('Den Helder');
+			$('#postcode').val(' ');
+			$('#number').val('1');
+			$('#country').val('Nederland');
+			$('.address-line').change();
+		}
+		
+		it('should show an error message when the distance is out of reach of the delivery table', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReply);
+			
+			buildDom( [
+									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
+									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
+									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
+									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
+								  ]);
+
+			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
+			
+			var result = $('#not-enough-ordered').html();
+			var isHidden = $('#not-enough-ordered').hasClass('hidden');
+			expect(result).toBe('We bezorgen helaas niet op deze afstand.');
+			expect(isHidden).toBe(false);
+			
+			$('#wrap').remove();
+
+		});
+		
+		it('should show an error message when the distance is within reach of the delivery table, but there is not enough ordered', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReplyWithinReach);
+			buildDom( [
+									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":109.5},
+									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":109.5},
+									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":250},
+									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":350}
+			]);
+			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
+
+			var isHidden = $('#not-enough-ordered').hasClass('hidden');
+			expect(isHidden).toBe(false);
+			expect($('.submit-controls').hasClass('disabled')).toBe(false);
+			
+			$('#wrap').remove();
+
+		});
+		
+		it('should show NO error message when the distance is within reach of the delivery table, AND there is enough ordered', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReplyWithinReach);
+			buildDom([
+									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":0}
+			]);
+			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
+
+			var isHidden = $('#not-enough-ordered').hasClass('hidden');
+			expect(isHidden).toBe(true);
+			expect($('.submit-controls').hasClass('disabled')).toBe(false);
+			
+			$('#wrap').remove();
+
+		});
+		
 	});
 });

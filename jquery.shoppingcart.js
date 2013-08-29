@@ -785,8 +785,7 @@
 	    	}
 
   			var delPrice = 0;
-  			
-  			
+  			console.log($('.deliveryType'));
   			if($('#bezorgen').is(':checked') || $('.deliveryType').val() == 'bezorgen' ) {
 		    	$('#not-enough-ordered').addClass('hidden');
   			
@@ -824,15 +823,15 @@
 							}
 						}
 					}
-				/*
-					if(doNotDeliver && !notEnoughOrdered){
-						this.logger("DO NOT DELIVER, OUT OF RANGE");
-						$('#not-enough-ordered').removeClass('hidden').html(
-							'We bezorgen helaas niet op deze afstand.');
-						doNotDeliver=true;
-					    //hide submit buttons
+					console.log('out of reach?');
+					if(this.distanceIsOutOfReach(distance)){
+						this.logger("Address out of reach!");
 						$('.submit-controls').addClass('disabled');
-					}*/
+						$('#not-enough-ordered').removeClass('hidden').html('We bezorgen helaas niet op deze afstand.');
+						doNotDeliver = true;						
+
+					}
+			
 				} 
 				else { //use the formula, which uses a different calculation structure.
 		
@@ -1010,6 +1009,17 @@
 				$('.vat-field-'+sel).html('<strong>€ '+this.formatEuro(vatMap[perc])+'</strong>');
 			}
 	    },	
+	    distanceIsOutOfReach : function(dist){
+			this.logger('checking if it is out of reach');
+	    	var max = 0;
+			for(var i = 0; i < this.settings.deliveryCosts.length; i++){
+				var cur = this.settings.deliveryCosts[i].maxKm;
+				if(cur > max) {
+					max = cur;
+				}
+			}
+			return dist > max;
+	    },
 	    clearCart : function(){
 	    	this.logger("Clearing cart!");
 	    	this.cartDataStore = [];
@@ -1254,7 +1264,6 @@
 		    }
 		    	
 		    $('.address-line, .address-line-elsewhere').bind('change.shoppingCart', function(){
-				console.log('xxx');
 		    	var compareToAddress = '';
 		    	var compareToAddress2="";
 		    	
@@ -1275,7 +1284,7 @@
 				    self.logger("Distance calc: Using normal delivery address");
 			    }
 			    if(self.allAddressFieldsFilledOut()){
-			    	self.calculateDistance(compareToAddress, function(){
+			    	self.calculateDistance(compareToAddress, function(dist){
 			   			self.updatePrices();		    	
 			    	});
 		    	}
@@ -1364,7 +1373,7 @@
 	        directionsService.route(queryData, function(response, status) {
 	            if (status == google.maps.DirectionsStatus.OK) {
 	            	distance = parseInt(response.routes[0].legs[0].distance.value) / 1000;
-	            	this.logger("Distance found: "+distance+" km");
+	            	self.logger("Distance found: "+distance+" km");
 	            	
 	            }
 				else {
