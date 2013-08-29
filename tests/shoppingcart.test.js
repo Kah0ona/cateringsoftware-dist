@@ -169,6 +169,8 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 
 			var isHidden = $('#not-enough-ordered').hasClass('hidden');
 			expect(isHidden).toBe(false);
+			expect($('#not-enough-ordered').html()).toMatch('vanaf een bedrag van');
+			
 			expect($('.submit-controls').hasClass('disabled')).toBe(false);
 			
 			$('#wrap').remove();
