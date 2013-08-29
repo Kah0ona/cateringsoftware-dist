@@ -93,9 +93,11 @@
  	        }
 		    $(selector).each(function(){
 		    	var x = $(this).val();
-		    	if(x === undefined || x === null || x == "") {
-		    		self.logger("Not all address fields set");
-			    	ret = false;
+		    	if($(this).attr('id') != 'deliveryName'){
+			    	if(x === undefined || x === null || x == "") {
+			    		self.logger("Not all address fields set");
+				    	ret = false;
+			    	}
 		    	}
 			});
 			
@@ -1266,7 +1268,7 @@
 		    		compareToAddress += " "+$(this).val();
 		    	});
 		    	$('.address-line-elsewhere').each(function(){
-		    		if($(this).val() != ""){
+		    		if($(this).val() != "" && $(this).attr('id') != 'deliveryElsewhere'){
 				    	compareToAddress2 += " "+$(this).val();	
 			    	}
 		    	})

@@ -533,7 +533,7 @@
 						 		   data-original-title="Accomodatie">&nbsp;?&nbsp;</a></label>			
 
 			<div class="controls">	
-				<input type="text" name="deliveryName" class="input-large address-line" id="deliveryName" />
+				<input type="text" name="deliveryName" class="input-large address-line-elsewhere" id="deliveryName" />
 			</div>		
 		</div>		
 		
