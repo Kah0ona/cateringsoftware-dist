@@ -782,7 +782,7 @@
 	    	}
 
   			var delPrice = 0;
-  			console.log($('.deliveryType'));
+
   			if($('#bezorgen').is(':checked') || $('.deliveryType').val() == 'bezorgen' ) {
 		    	$('#not-enough-ordered').addClass('hidden');
   			
@@ -820,7 +820,6 @@
 							}
 						}
 					}
-					console.log('out of reach?');
 					if(this.distanceIsOutOfReach(distance)){
 						this.logger("Address out of reach!");
 						$('.submit-controls').addClass('disabled');
@@ -1366,7 +1365,6 @@
 			var directionsService = new google.maps.DirectionsService();
 			distance = -1;
 			var self = this;
-			console.log(directionsService);
 	        directionsService.route(queryData, function(response, status) {
 	            if (status == google.maps.DirectionsStatus.OK) {
 	            	distance = parseInt(response.routes[0].legs[0].distance.value) / 1000;
