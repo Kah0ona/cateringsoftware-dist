@@ -224,8 +224,23 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 
 		});
 		
-		
-	
-		
+		it('should show an error message when the address is not found', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(function(x,y){
+				//console.log(y);
+				y.call(this, [], google.maps.DirectionsStatus.NOT_FOUND);
+			});
+			
+			buildDom([{"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":0}]);
+						expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();						
+
+			var result = $('#not-enough-ordered').html();
+			var isHidden = $('#not-enough-ordered').hasClass('hidden');
+			expect(result).toBe('Het ingevoerde adres kon niet worden gevonden, waardoor we eventuele bezorgkosten niet kunnen berekenen. Verander het adres. Blijft het probleem zich voordoen? Neem dan contact met ons op.');
+			expect(isHidden).toBe(false);
+			
+			$('#wrap').remove();
+
+
+		});
 	});
 });

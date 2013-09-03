@@ -785,122 +785,24 @@
 
   			if($('#bezorgen').is(':checked') || $('.deliveryType').val() == 'bezorgen' ) {
 		    	$('#not-enough-ordered').addClass('hidden');
-  			
-	  			if(!this.settings.deliveryFormula) { //if we are using the tabular form.
-			    	//check in the settings.deliveryCosts what is the delivery price
-			    	
-			    	
-			    	var doNotDeliver = true;
-			    	var notEnoughOrdered = false;
-					for(var i = 0; i < this.settings.deliveryCosts.length; i++){
-						var min = parseInt(this.settings.deliveryCosts[i].minKm);
-						var max = parseInt(this.settings.deliveryCosts[i].maxKm);	
-						this.logger(min+" "+max+" "+distance);
-						if(min <= distance && distance < max) { //if distance is within this range
-							if(totalInclVat < parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)){
-								if(distance > 0){
-									$('#not-enough-ordered').removeClass('hidden').html(
-									'We bezorgen op deze afstand ('+ 
-													this.formatEuro(distance)+' km) vanaf een bedrag van €'+
-													this.formatEuro(parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)));
-									doNotDeliver=true;
-									notEnoughOrdered = true;
-								    //hide submit buttons
-									$('.submit-controls').addClass('disabled');
-								}
-								break;
-							}
-							else {
-								//update the table of the checkout 
-								deliveryCosts.price = parseFloat(this.settings.deliveryCosts[i].price);
-								$('.submit-controls').removeClass('disabled');
-								$('#not-enough-ordered').addClass('hidden');
-								$('.deliverycosts-field').html("<strong>€ "+this.formatEuro(delPrice)+"</strong>");
-								doNotDeliver = false;						
-							}
+		    	if(distance === "NOT_FOUND" || distance === "ERROR"){
+			    	this.logger("Address out of reach!");
+					$('.submit-controls').addClass('disabled');
+					$('#not-enough-ordered').removeClass('hidden').html('Het ingevoerde adres kon niet worden gevonden, waardoor we eventuele bezorgkosten niet kunnen berekenen. Verander het adres. Blijft het probleem zich voordoen? Neem dan contact met ons op.');
+		    	}
+		    	else {
+			  		if(!this.settings.deliveryFormula) { //if we are using the tabular form.
+				    	this.renderUsingDeliveryTable();
+						if(this.distanceIsOutOfReach(distance)){
+							this.logger("Address out of reach!");
+							$('.submit-controls').addClass('disabled');
+							$('#not-enough-ordered').removeClass('hidden').html('We bezorgen helaas niet op deze afstand.');
 						}
-					}
-					if(this.distanceIsOutOfReach(distance)){
-						this.logger("Address out of reach!");
-						$('.submit-controls').addClass('disabled');
-						$('#not-enough-ordered').removeClass('hidden').html('We bezorgen helaas niet op deze afstand.');
-						doNotDeliver = true;						
-
-					}
-			
+					} 
+					else { //use the formula, which uses a different calculation structure.
+						this.renderUsingDeliveryFormula();
+					} 
 				} 
-				else { //use the formula, which uses a different calculation structure.
-		
-				
-					var delivery = this.settings.deliveryCosts[0];
-					this.logger("delivery object");
-					this.logger(delivery);
-					
-					var delCosts = 0;
-					
-					var minOrderPrice = 0;
-	
-					if(distance * parseFloat(delivery.minOrderPricePerKm) < delivery.absoluteMinOrderPrice) 
-						minOrderPrice = delivery.absoluteMinOrderPrice;
-					else
-						minOrderPrice = distance * parseFloat(delivery.minOrderPricePerKm); 
-					
-					var freeDelivery = 0; //euro amount to be ordered for free delivery
-					
-					
-					delCosts = distance * parseFloat(delivery.pricePerKm);
-
-
-					
-					if(delivery.useMultiplierFreeDelivery){
-						freeDelivery = parseFloat(delivery.deliveryFreeMultiplier) * parseFloat(minOrderPrice);
-					}
-					else {
-						freeDelivery = parseFloat(delivery.deliveryFreeAmount);
-					}
-					
-					if(delivery.absoluteMaxDistance == null)
-						delivery.absoluteMaxDistance=500;
-						
-					if(distance > delivery.absoluteMaxDistance){
-						$('.submit-controls').addClass('disabled');
-						$('#not-enough-ordered').removeClass('hidden').html('We bezorgen helaas niet op deze afstand.');
-					    delCosts = 0;					
-					}
-					else { //within reach, now check for
-						if(totalInclVat > freeDelivery) { //delcosts = 0, since someone ordered enough
-							this.logger("free delivery, since total > freedelivery threshold");
-							delCosts = 0;
-						}
-					
-						if(minOrderPrice > totalInclVat){
-							if(distance > 0) {
-								$('#not-enough-ordered')
-									.removeClass('hidden')
-									.html(
-										'<strong>Let op:</strong> We bezorgen op deze afstand ('+ 
-														this.formatEuro(distance)+' km) vanaf een bestelbedrag van €'+
-														this.formatEuro(minOrderPrice));
-								doNotDeliver=true;
-							    //hide submit buttons
-							    delCosts = 0;
-						    }
-							$('.submit-controls').addClass('disabled');						
-						}
-						else {
-	
-							$('#not-enough-ordered').addClass('hidden').html('');
-							doNotDeliver=false;
-						    //show submit buttons
-							$('.submit-controls').removeClass('disabled');
-	
-						}
-					}
-					if(parseFloat(delCosts) < 0)
-						delCosts=  0;
-					
-					deliveryCosts.price = parseFloat(delCosts);
-				}  
 			
 			} 
 			else {//afhalen/pickup, delivery costs is zero
@@ -908,8 +810,7 @@
 				$('.submit-controls').removeClass('disabled');
 				deliveryCosts.price = 0;
 			}	
-	    	
-	    	
+	    		    	
 	    	
 	    	if(!this.analyzeDeliveryOptions()){
 		    	$('.submit-controls').addClass('disabled');
@@ -1005,6 +906,105 @@
 				$('.vat-field-'+sel).html('<strong>€ '+this.formatEuro(vatMap[perc])+'</strong>');
 			}
 	    },	
+	    renderUsingDeliveryFormula : function() {
+			var delivery = this.settings.deliveryCosts[0];
+			var delCosts = 0;
+			var minOrderPrice = 0;			
+
+			this.logger("delivery object");
+			this.logger(delivery);
+
+			if(distance * parseFloat(delivery.minOrderPricePerKm) < delivery.absoluteMinOrderPrice) 
+				minOrderPrice = delivery.absoluteMinOrderPrice;
+			else
+				minOrderPrice = distance * parseFloat(delivery.minOrderPricePerKm); 
+			
+			var freeDelivery = 0; //euro amount to be ordered for free delivery
+			
+			delCosts = distance * parseFloat(delivery.pricePerKm);
+			
+			if(delivery.useMultiplierFreeDelivery){
+				freeDelivery = parseFloat(delivery.deliveryFreeMultiplier) * parseFloat(minOrderPrice);
+			}
+			else {
+				freeDelivery = parseFloat(delivery.deliveryFreeAmount);
+			}
+			
+			if(delivery.absoluteMaxDistance == null)
+				delivery.absoluteMaxDistance=500;
+				
+			if(distance > delivery.absoluteMaxDistance){
+				$('.submit-controls').addClass('disabled');
+				$('#not-enough-ordered').removeClass('hidden').html('We bezorgen helaas niet op deze afstand.');
+			    delCosts = 0;					
+			}
+			else { //within reach, now check for
+				if(totalInclVat > freeDelivery) { //delcosts = 0, since someone ordered enough
+					this.logger("free delivery, since total > freedelivery threshold");
+					delCosts = 0;
+				}
+			
+				if(minOrderPrice > totalInclVat){
+					if(distance > 0) {
+						$('#not-enough-ordered')
+							.removeClass('hidden')
+							.html(
+								'<strong>Let op:</strong> We bezorgen op deze afstand ('+ 
+												this.formatEuro(distance)+' km) vanaf een bestelbedrag van €'+
+												this.formatEuro(minOrderPrice));
+						doNotDeliver=true;
+					    //hide submit buttons
+					    delCosts = 0;
+				    }
+					$('.submit-controls').addClass('disabled');						
+				}
+				else {
+
+					$('#not-enough-ordered').addClass('hidden').html('');
+					doNotDeliver=false;
+				    //show submit buttons
+					$('.submit-controls').removeClass('disabled');
+
+				}
+			}
+			if(parseFloat(delCosts) < 0)
+				delCosts=  0;
+			
+			deliveryCosts.price = parseFloat(delCosts);		    
+	    },
+	    
+	    renderUsingDeliveryTable : function(){
+		    //check in the settings.deliveryCosts what is the delivery price
+		    var delPrice = 0;
+	    	var notEnoughOrdered = false;
+			for(var i = 0; i < this.settings.deliveryCosts.length; i++){
+				var min = parseInt(this.settings.deliveryCosts[i].minKm);
+				var max = parseInt(this.settings.deliveryCosts[i].maxKm);	
+				this.logger(min+" "+max+" "+distance);
+				if(min <= distance && distance < max) { //if distance is within this range
+					if(totalInclVat < parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)){
+						if(distance > 0){
+							$('#not-enough-ordered').removeClass('hidden').html(
+							'We bezorgen op deze afstand ('+ 
+											this.formatEuro(distance)+' km) vanaf een bedrag van €'+
+											this.formatEuro(parseFloat(this.settings.deliveryCosts[i].minimumOrderPrice)));
+							notEnoughOrdered = true;
+						    //hide submit buttons
+							$('.submit-controls').addClass('disabled');
+						}
+						break;
+					}
+					else {
+						//update the table of the checkout 
+						deliveryCosts.price = parseFloat(this.settings.deliveryCosts[i].price);
+						$('.submit-controls').removeClass('disabled');
+						$('#not-enough-ordered').addClass('hidden');
+						$('.deliverycosts-field').html("<strong>€ "+this.formatEuro(delPrice)+"</strong>");
+					}
+				}
+			}
+	    },
+	    
 	    distanceIsOutOfReach : function(dist){
 			this.logger('checking if it is out of reach');
 	    	var max = 0;
@@ -1371,7 +1371,13 @@
 	            	self.logger("Distance found: "+distance+" km");
 	            	
 	            }
+	            else if(status == google.maps.DirectionsStatus.NOT_FOUND){
+		            distance = "NOT_FOUND";
+		            self.logger("Address not found. "+status);
+	            }
 				else {
+					distance = "ERROR";
+
 					self.logger("Something went wrong, or address not found: "+status)
 					self.logger(response);
 				}            
