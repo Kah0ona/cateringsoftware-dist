@@ -608,6 +608,7 @@
 					<p id="not-enough-ordered" class="hidden alert alert-error"></p>
 					<p id="invalid-selection" class="hidden alert alert-error"></p>					
 					<div class="controls">	
+					<input type="hidden" name="distance" id="calculateddistance" value="" />					
 					<input type="submit" name="invoice" class="submit-controls btn btn-primary " id="invoice" value="Plaats bestelling" style="width: 130px;" />
 					<input type="submit" name="estimate" class="submit-controls btn " id="estimate" value="Offerte aanvragen" style="width: 130px;" />						
 					</div>		
