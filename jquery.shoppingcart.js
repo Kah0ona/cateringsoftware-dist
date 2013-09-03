@@ -810,7 +810,8 @@
 				$('.submit-controls').removeClass('disabled');
 				deliveryCosts.price = 0;
 			}	
-	    		    	
+	    	
+	    	$('#calculateddistance').val(distance*1000);	    	
 	    	
 	    	if(!this.analyzeDeliveryOptions()){
 		    	$('.submit-controls').addClass('disabled');

@@ -151,6 +151,8 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			$('<input type="text" name="postcode" maxlength="7" class="input-large span3 address-line" id="postcode">').appendTo('#wrap');
 			$('<input type="text" name="number" maxlength="7" class="input-large span3 address-line" id="number">').appendTo('#wrap');
 			$('<input type="text" name="country" class="input-large address-line" id="country">').appendTo('#wrap');			
+			$('<input type="hidden" name="calculateddistance" id="calculateddistance" value="" />').appendTo('#wrap');
+
 			$('<p id="not-enough-ordered" class="hidden alert alert-error"></p>').appendTo('#wrap');
 
 			$('#shoppingcart').shoppingCart({cartDisplayMode : 'block',
@@ -241,6 +243,21 @@ describe("Testsuite for the shoppingcart jquery plugin.", function() {
 			$('#wrap').remove();
 
 
+		});
+		
+		it('should render a hidden input element in the checkout form with the calculated distance', function(){
+			spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(fakeGoogleMapsReplyWithinReach);
+			buildDom([
+									   {"DeliveryCost_id":3,"price":0,"minKm":0,"maxKm":35,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":5,"price":10,"minKm":35,"maxKm":50,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":6,"price":15,"minKm":50,"maxKm":70,"minimumOrderPrice":0},
+									   {"DeliveryCost_id":46,"price":22.5,"minKm":70,"maxKm":350,"minimumOrderPrice":0}
+			]);
+			expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();				
+			var result = parseInt($('#calculateddistance').val());
+			expect(result).toBe(10000);
+			
+			$('#wrap').remove();
 		});
 	});
 });
