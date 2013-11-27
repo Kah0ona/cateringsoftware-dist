@@ -551,6 +551,7 @@ function cateringsoftware_cart_init($atts) {
 	global $changeCodeError;
 
 	if(isset($_GET['changeCode']) && !isset($_SESSION['changeCodeMessageDisplayed']) ){
+	
 		include_once('cart_store.php');
 		$error = initStoreByChangeCode($_GET['changeCode']);
 		print $error;

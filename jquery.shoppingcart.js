@@ -1369,6 +1369,7 @@
 	        directionsService.route(queryData, function(response, status) {
 	            if (status == google.maps.DirectionsStatus.OK) {
 	            	distance = parseInt(response.routes[0].legs[0].distance.value) / 1000;
+	            	distance = parseInt(distance);
 	            	self.logger("Distance found: "+distance+" km");
 	            	
 	            }
