@@ -26,7 +26,8 @@
 	}
 	//print_r($packages);
 	 
-
+	
+	
 // Let's justify to the left, with 14 positions of width, 8 digits of
 // left precision, 2 of right precision, withouth grouping character
 // and using the international format for the nl_NL locale.
@@ -94,12 +95,21 @@ setlocale(LC_MONETARY, 'it_IT');
 
 		
 		$jsonShoppingCart = encodeProductToJson($w, 'material');
-		
-	 	if($w->materialImage == null)
-	 		$w->materialImage = PLUGIN_SERVER_URL.'/img/materials_no_image.jpg';
+		$options = get_option('cateringsoftware_options');
+				
+	 	if($w->materialImage == null){
+	 		if($options['NoImage'] != null){
+		 		$w->materialImage = $options['NoImage'];
+	 		}
+	 		else {
+	 			$w->materialImage = PLUGIN_SERVER_URL.'/img/materials_no_image.jpg';
+	 		}
+	 	}
 	 	else 
 	 		$w->materialImage = SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->materialImage;
 		
+		
+
 ?>
 <!-- Template starting -->
 <?php echo $prediv; ?>

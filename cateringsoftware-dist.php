@@ -607,8 +607,13 @@ function cateringsoftware_cart_init($atts) {
 function cateringsoftware_shopping_cart($atts){
 	return '<div id="shoppingcart"></div>';
 }
-
-
+function load_admin_script(){
+	if (isset($_GET['page']) && $_GET['page'] == 'catering-software') {
+        wp_enqueue_media();
+        wp_register_script('file-upload-js', WP_PLUGIN_URL.'/cateringsoftware-dist/file.upload.js', array('jquery'));
+        wp_enqueue_script('file-upload-js');
+	}
+}
 
 
 // perform the check when the_posts() function is called
@@ -632,6 +637,8 @@ add_shortcode('cateringsoftware_woonplaats_check', 'cateringsoftware_woonplaats_
 add_shortcode('cateringsoftware_shopping_cart', 'cateringsoftware_shopping_cart');
 
 add_shortcode('cateringsoftware_deal_widget', 'cateringsoftware_deal_widget_shorttag');
+
+add_action('admin_enqueue_scripts', 'load_admin_script'  );
 
 
 //SEO

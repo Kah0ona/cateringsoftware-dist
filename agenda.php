@@ -86,7 +86,7 @@
 			&bull;  <?php echo date('d-m-Y, G:i',strtotime($k)); ?>  /&nbsp; <?php echo $w->workshopName; ?> <span class="workshop-full">VOL</span>
 			<?php else: ?>	
 			<a href="/workshops/<?php echo $w->Workshop_id; ?>" >&bull;  <?php echo date('d-m-Y, G:i',strtotime($k)); ?>  /&nbsp; <?php echo $w->workshopName; ?> 
-				(<?php echo ($w->maxNumPersons - $w->numSubscriptions); ?> plekken vrij) &rarr;</a>
+				(<?php echo ($w->maxNumPersons - $w->numSubscriptions); ?> plaatsen vrij) &rarr;</a>
 			<?php endif; ?>
 
 		</li>

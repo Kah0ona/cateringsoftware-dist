@@ -26,10 +26,11 @@ function cateringsoftware_register_settings() {
   add_cs_field('hostname','Hostname:');
   add_cs_field('address','Adres van uw zaak (formaat: Kalverstraat 12 1234AB Amsterdam):');
   add_cs_field('cart_class', 'CSS-class van het winkelwagentje:');
+  add_cs_field_upload('NoImage','Toon dit plaatje als bij het pakket of gerecht geen plaatje staat ingesteld.');
+
   add_cs_field_select('region','Land:', array('nl'=>'Nederland','be'=>'Belgi&euml;'));
   add_cs_field_boolean('use_formula','Gebruik bezorgformule:'); 
   add_cs_field_boolean('prices_incl_vat','Prijzen staan inclusief BTW in CateringSoftware'); 
-  
   add_cs_field_boolean('allow_takeaway','Afhalen mogelijk?');
   add_cs_field_boolean('allow_waitress','Bediening mogelijk?');
   add_cs_field_boolean('use_discount_table','Gebruik kortingstabel?');
@@ -64,6 +65,11 @@ function add_cs_field_select($name,$title,$values){
 	);
 }
 
+
+function add_cs_field_upload($name, $title){
+	add_settings_field('cateringsoftware_options_'.$name, $title, 'cateringsoftware_add_setting_field_upload', 
+		'catering-software', 'cateringsoftware_main_options', array('name'=>$name));	
+}
 
 function catsoft_section_text(){
 	echo '<p>Hieronder kunt u diverse globale instellingen doen voor de CateringSoftware webshop module. Sommige instellingen zijn van technische aard, dus onze werknemers zullen dit voor u instellen.</p>';
@@ -105,5 +111,15 @@ function cateringsoftware_add_setting_field_select($args){
 	echo $ret;
 }
 
+
+function cateringsoftware_add_setting_field_upload($args){
+	$name = $args['name'];
+	$options = get_option('cateringsoftware_options');	  
+
+	echo '<div class="uploader">
+			  <input type="text" name="cateringsoftware_options['.$name.']" id="cateringsoftware_'.$name.'" value="'.$options[$name].'" />
+			  <input class="button webshop-upload-button" name="cateringsoftware_button_'.$name.'" id="cateringsoftware_button_'.$name.'" value="Upload" />
+			</div>';	  
+}
 
 ?>

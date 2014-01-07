@@ -109,7 +109,8 @@ setlocale(LC_MONETARY, 'it_IT');
 		}
 		
 		$jsonShoppingCart = encodeToJson($w);
-		
+		$options = get_option('cateringsoftware_options');
+
 ?>
 <!-- Template starting -->
 <?php echo $prediv; ?>
@@ -123,6 +124,8 @@ setlocale(LC_MONETARY, 'it_IT');
 			<a href="/packages/<?php echo $w->Package_id; ?>/">
 				<?php  $showPicOnOverview; if($w->imagePkg != null && $showPicOnOverview) { ?>
 				<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imagePkg; ?>" alt="<?php echo $w->pkgName; ?>" />
+				<?php } elseif($options['NoImage'] != null){ ?>
+				<img src="<?php echo $options['NoImage']; ?>" alt="<?php echo $w->pkgName; ?>" />				
 				<?php } ?>
 
 				<?php if($w->packageDeal) { ?>
