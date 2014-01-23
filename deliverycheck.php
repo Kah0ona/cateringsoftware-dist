@@ -204,7 +204,7 @@
 
 
 
-<div class="modal hide fade" id="city-modal">
+<div class="modal hide " id="city-modal">
 	 <div class="modal-header">
 	 	<button class="close" data-dismiss="modal">×</button>
 	 	<h3>Waar bezorgen we?</h3>
