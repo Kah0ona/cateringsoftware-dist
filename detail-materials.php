@@ -39,7 +39,7 @@
  	if($w->materialImage == null)
  		$w->materialImage = PLUGIN_SERVER_URL.'/img/materials_no_image.jpg';
  	else 
- 		$w->materialImage = SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->materialImage;
+ 		$w->materialImage = SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$w->materialImage;
 ?>
 <script type="text/javascript" >
 	allProducts.materials = [<?php echo $jsonShoppingCart; ?>];

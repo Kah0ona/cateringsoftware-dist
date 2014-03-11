@@ -89,7 +89,7 @@ $('#workshops-widget').cycle({
 		<div class="workshop overview  <?php echo $numColName; ?>">
 				
 	
-			<a href="/workshops/<?php echo $w->Workshop_id; ?>"><img alt="<?php echo $w->workshopName; ?>"  src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imageWorkshop; ?>" /></a>
+			<a href="/workshops/<?php echo $w->Workshop_id; ?>"><img alt="<?php echo $w->workshopName; ?>"  src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Workshop/'.$w->imageWorkshop; ?>" /></a>
 			
 			<h3 class="workshop-title"><a href="/workshops/<?php echo $w->Workshop_id; ?>"><?php echo $w->workshopName; ?></a> <?php if($w->deal) { ?><span class="deal">Aanbieding</span><?php } ?></h3>
 			<p>&euro;<?php echo money_format('%.2n', $w->workshopPrice); ?> pp.</p>

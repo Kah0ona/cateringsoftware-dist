@@ -106,7 +106,7 @@ setlocale(LC_MONETARY, 'it_IT');
 	 		}
 	 	}
 	 	else 
-	 		$w->materialImage = SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->materialImage;
+	 		$w->materialImage = SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$w->materialImage;
 		
 		
 

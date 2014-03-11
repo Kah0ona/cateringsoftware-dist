@@ -128,7 +128,7 @@ setlocale(LC_MONETARY, 'it_IT');
 			<a href="/products/<?php echo $w->Dish_id; ?>/">
 			
 				<?php if($w->imageDish != null && $w->imageDish != "uploads/Dish/" && $showPicOnOverview) { ?>
-				<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imageDish; ?>" alt="<?php echo $w->dishName; ?>" />
+				<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$w->imageDish; ?>" alt="<?php echo $w->dishName; ?>" />
 				<?php } elseif($options['NoImage'] != null) { ?>
 					<img src="<?php echo $options['NoImage']; ?>" alt="<?php echo $w->dishName; ?>" />
 				<?php } ?>

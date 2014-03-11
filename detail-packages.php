@@ -110,7 +110,7 @@
 				   		if($columns5050) { $imgSpan = '6'; $imgSpan2 = '6'; }
 			   ?>
 				   <div class="productimage span<?php echo $imgSpan; ?>"> 
-					  <img alt="<?php echo $w->pkgName; ?>" src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imagePkg; ?>">
+					  <img alt="<?php echo $w->pkgName; ?>" src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Package/'.$w->imagePkg; ?>">
 					  
 					  	<?php if($w->packageDeal) { ?>
 						<div class="deal-image">

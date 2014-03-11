@@ -123,7 +123,7 @@ setlocale(LC_MONETARY, 'it_IT');
 		
 			<a href="/packages/<?php echo $w->Package_id; ?>/">
 				<?php  $showPicOnOverview; if($w->imagePkg != null && $showPicOnOverview) { ?>
-				<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/'.$w->imagePkg; ?>" alt="<?php echo $w->pkgName; ?>" />
+				<img src="<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Package/'.$w->imagePkg; ?>" alt="<?php echo $w->pkgName; ?>" />
 				<?php } elseif($options['NoImage'] != null){ ?>
 				<img src="<?php echo $options['NoImage']; ?>" alt="<?php echo $w->pkgName; ?>" />				
 				<?php } ?>
