@@ -604,7 +604,7 @@
 			<div class="span12">
 				<h3 class="payment-options">Betalingsopties</h3>
 				<div class="control-group">
-					<p>Hieronder kunt u de bestelling afronden. <span class="invoice-expl">Kies voor 'Direct betalen' om direct een factuur te ontvangen. Om een offerte aan te vragen, kies 'Offerte aanvragen'.</span></p>
+					<p><span class="invoice-expl">Hieronder kunt u de bestelling afronden.  Kies voor 'Direct betalen' om direct een factuur te ontvangen. Om een offerte aan te vragen, kies 'Offerte aanvragen'.</span></p>
 					<p id="not-enough-ordered" class="hidden alert alert-error"></p>
 					<p id="invalid-selection" class="hidden alert alert-error"></p>					
 					<div class="controls">	
