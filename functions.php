@@ -102,7 +102,7 @@ function encodeToJson($pkg){
 	$ret = array();
 	$ret["Package_id"]= $pkg->Package_id;
 	$ret["type"] = "package";
-	$ret["thumb"] = SYSTEM_URL_CATERINGSOFTWARE.'/'.$pkg->imagePkg;
+	$ret["thumb"] = SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Package/'.$pkg->imagePkg;
 	$ret["title"] = $pkg->pkgName;	
 	$ret["desc"]  = $pkg->pkgDesc;	
 	$ret["price"] = $pkg->packagePrice;	
@@ -154,7 +154,7 @@ function encodeProductToJson($pro, $type='product', $getString = true){
 	if($type == 'product'){
 		$id = $pro->Dish_id;
 		$title = addslashes($pro->dishName);	
-		$thumb = SYSTEM_URL_CATERINGSOFTWARE.'/'.$pro->imageDish;
+		$thumb = SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$pro->imageDish;
 		$quantity = $pro->amount;
 
 
@@ -171,7 +171,7 @@ function encodeProductToJson($pro, $type='product', $getString = true){
 	elseif($type == "material") {
 		$id = $pro->Material_id;
 		$title = addslashes($pro->materialName);	
-		$thumb = SYSTEM_URL_CATERINGSOFTWARE.'/'.$pro->materialImage;
+		$thumb = SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$pro->materialImage;
 		$quantity = $pro->amountMaterial;
 		$contain = $pro->containmentTypeMaterial;
 		$price = $pro->materialPrice;
