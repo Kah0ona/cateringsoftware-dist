@@ -6,7 +6,7 @@ var reqMsg = "Dit veld is verplicht.";
 var emailMsg = "Vul een geldig e-mailadres in. ";
 var discount = 0;
 var couponType = "";
-$(document).ready(function(){
+jQuery(document).ready(function($){
 	$( ".tooltip" ).tooltip({
 		delay: 0,
 		showURL: false,
@@ -180,6 +180,7 @@ $(document).ready(function(){
 }); 
 
 function showSendingMessage(){
+	var $ = jQuery;
 	$('#submitting-message').html("Bezig met versturen van de gegevens...").show();
 }
 
@@ -193,6 +194,7 @@ function showSuccesMessage(){
 * the submit_booking.php script.
 */
 function updateNumSubscriptionsMessage(){
+	var $ = jQuery;
 
 	$('#too-many-persons-warning2').hide();
 	var num = $('#persons').val();
@@ -260,6 +262,7 @@ function isNumeric(input) {
 }
 
 function validateDateAndTime(){
+	var $ = jQuery;
 	var dateString = convertDateToMySqlFormat($('#datum').val());
 	var time  = $('#deliveryTime').val();
 	var avail = isDateAvailable(dateString,time, workshops[0]);
@@ -268,6 +271,7 @@ function validateDateAndTime(){
 
 
 function updatePrice(){
+	var $ = jQuery;
 	$('#not-a-number').hide();
 	var num = $('#persons').val();
 	var elt = $('#the-price');
@@ -328,7 +332,7 @@ function updatePrice(){
 }
 
 function couponCallback(jsonObj){
-	
+	var $ = jQuery;
 	discount = jsonObj.discount;
 	couponType = jsonObj.couponType;
 	/*if(discount == 0){
@@ -414,6 +418,7 @@ function getTimeFromDateTime(dateString, timeString){
 }
 
 function updateAvailabilityMessage(available){
+	var $ = jQuery;	
 	var curVal = $('#datum').val();
 	if(curVal == null || curVal == undefined || curVal == ""){
 		$('#availability').css('color','none').html('Kies een datum.');

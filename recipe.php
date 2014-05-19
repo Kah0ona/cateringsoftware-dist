@@ -1,6 +1,6 @@
 <?php
 	global $theHostname;
-	$url = BASE_URL_CATERINGSOFTWARE.'/menus?hostname='.$theHostname;
+	$url = BASE_URL_CATERINGSOFTWARE.'/getmenus?hostname='.$theHostname;
 	$url_post = SUBMIT_EMAIL_URL;
 ?>
 <script type="text/javascript">
@@ -28,9 +28,11 @@ $(document).ready(function(){
 			return;
 		}
 		
+		window.location = url_ + '';
+		
 		$.ajax({
 				url: url_,
-				data: { menuCode : $('#recipePassword').val() },
+				data: { menuCode : $('#recipePassword').val(), numPersons },
 				jsonpCallback: 'recipeCallback',
 				jsonp: 'callback',
 				dataType: 'jsonp'

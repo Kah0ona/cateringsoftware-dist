@@ -8,7 +8,7 @@ var discount = 0;
 
 var submitType = "invoice";
 var shouldCheckDate = true; //set this in like header.php to false if you want to enable orders that don't have the 2 day in advance check
-$(document).ready(function(){
+jQuery(document).ready(function($){
 
 	$.datepicker.setDefaults( $.datepicker.regional[ "nl" ] )		
 	$("#orderDate").datepicker({

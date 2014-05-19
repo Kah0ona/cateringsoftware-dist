@@ -110,7 +110,7 @@
  	var hostname= '<?php echo $theHostname; ?>';
 	var baseUrl = '<?php echo $_SERVER['HTTP_HOST']; ?>';
 	var deliveryCostUrl = '<?php echo $deliveryCostUrl; ?>';
-	jQuery(document).ready(function(){
+	jQuery(document).ready(function($){
 		$('.xtooltip').popover();
 		
 		$('#deliveryElsewhere').change(function(){

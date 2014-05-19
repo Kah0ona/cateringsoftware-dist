@@ -23,12 +23,12 @@ setlocale(LC_MONETARY, 'it_IT');
 ?>
 <?php if($useDeals) { ?>
 <script type="text/javascript">
-$(window).load(function() {
-$('#workshops-widget').cycle({ 
-    fx:    'fade', 
-    speed:  1000, 
-    timeout: 6000
- });
+jQuery(window).load(function() {
+	jQuery('#workshops-widget').cycle({ 
+	    fx:    'fade', 
+	    speed:  1000, 
+	    timeout: 6000
+	 });
 });
 </script>
 <?php } ?>

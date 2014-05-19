@@ -91,7 +91,7 @@
 	
 </script>
 <script type="text/javascript"> 
-	jQuery(document).ready(function(){
+	jQuery(document).ready(function($){
 		$('.xtooltip').popover();
 		
 		if(allProducts.packages[0].price == 0){
@@ -258,7 +258,7 @@
 						 		
 						 		<?php echo $d->materialName; ?>
 						 		
-						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Materials/'.$d->materialImage; ?>' /><?php } ?>" 
+						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover" 
    							 		   data-placement="left"
 							 		   data-trigger="hover"
@@ -284,7 +284,7 @@
 						 		<label for="extra-material-<?php echo $d->Material_id; ?>" product-index="<?php echo $counter; ?>" product-type="material" sub-product-index="<?php echo $counter;?>">
 						 		   <?php echo getAmountForm($d->amountMaterial, 'amount-extra extra-material-'.$d->Material_id, 'extra-product-'.$d->Material_id); ?>&nbsp;
 							 	   <?php echo $d->materialName; ?> (€<?php echo money_format('%.2n', $d->materialPrice); ?> per stuk)
-							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Materials/'.$d->materialImage; ?>' /><?php } ?>" 
+							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover"
 							 		   data-placement="left"							 		    
 							 		   data-trigger="hover"

@@ -52,7 +52,7 @@ setlocale(LC_MONETARY, 'it_IT');
 		
 ?>
 <script type="text/javascript"> 
-	jQuery(document).ready(function(){
+	jQuery(document).ready(function($){
 		$('.xtooltip').popover();
 	});
 	
