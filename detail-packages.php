@@ -163,7 +163,7 @@
 						 		<a  data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$d->imageDish; ?>' /><?php } ?>" 
 						 		   rel="popover" 
 							 	   data-placement="left"
-						 		   
+						 		   data-html="true"
 						 		   data-trigger="hover"
 						 		   class="label label-info xtooltip package-dish-tooltip" 
 						 		   href="#" 
@@ -193,7 +193,8 @@
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$d->imageDish; ?>' /><?php } ?>"
 							 		   rel="popover" 
 								 	   data-placement="left"
-							 		   
+							 		   data-html="true"
+
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
@@ -228,6 +229,7 @@
 						 		   rel="popover" 
 						 		   data-trigger="hover"
 						 		   data-placement="left"
+					 		   	   data-html="true"
 
 						 		   class="label label-info xtooltip package-dish-tooltip" 
 						 		   href="#" 
@@ -264,6 +266,7 @@
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
+							 		   data-html="true"
 						 		   
 						 		   data-original-title="<?php echo $d->materialName; ?>">info</a>
 						 		
@@ -288,6 +291,7 @@
 							 		   rel="popover"
 							 		   data-placement="left"							 		    
 							 		   data-trigger="hover"
+							 		   data-html="true"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
 						 		   

@@ -235,6 +235,7 @@ setlocale(LC_MONETARY, 'it_IT');
 		    		<a  data-content="<p class=' '><?php echo $v->extraDesc; ?></p>" 
 						 		   rel="popover" 
 						 		   data-trigger="hover"
+						 		   data-html="true"
 						 		   class="label label-info xtooltip" 
 						 		   href="#" 
 						 		   

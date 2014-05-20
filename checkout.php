@@ -155,6 +155,7 @@
 								<?php echo $pkg->title; ?>
 								<a data-content="<p class=' '><?php echo htmlspecialchars($pkg->desc); ?></p><img src='<?php echo $pkg->thumb; ?>' />" 
 							 		   rel="popover" 
+							 		   data-html="true"
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip" 
 							 		   href="#" 
@@ -190,7 +191,8 @@
 								</td>
 								<td><?php echo $p->title; ?>
 								<a data-content="<p class=' '><?php echo htmlspecialchars($p->desc); ?></p><img src='<?php echo $p->thumb; ?>' />" 
-								 		   rel="popover" 
+								 		   rel="popover"
+								 		   data-html="true"
 								 		   data-trigger="hover"
 								 		   class="label label-info xtooltip package-dish-tooltip" 
 								 		   href="#" 
@@ -209,6 +211,7 @@
 								<td><?php echo $p->title; ?>
 								<a data-content="<p class=' '><?php echo htmlspecialchars($p->desc); ?></p><img src='<?php echo $p->thumb; ?>' />" 
 								 		   rel="popover" 
+								 		   data-html="true"  
 								 		   data-trigger="hover"
 								 		   class="label label-info xtooltip package-dish-tooltip" 
 								 		   href="#" 
@@ -238,6 +241,7 @@
 							<a data-content="<p class=' '><?php echo htmlspecialchars($p->desc); ?></p><img src='<?php echo $p->thumb; ?>' />" 
 							 		   rel="popover" 
 							 		   data-trigger="hover"
+							 		   data-html="true"							 		   
 							 		   class="label label-info xtooltip" 
 							 		   href="#" 
 						 		   
@@ -274,6 +278,7 @@
 							<a data-content="<p class=' '><?php echo htmlspecialchars($p->desc); ?></p><img src='<?php echo $p->thumb; ?>' />" 
 							 		   rel="popover" 
 							 		   data-trigger="hover"
+							 		   data-html="true"							 		   
 							 		   class="label label-info xtooltip" 
 							 		   href="#" 
 						 		   
