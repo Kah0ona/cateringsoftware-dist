@@ -52,7 +52,7 @@
 ?>
 
 <script type="text/javascript">
-	$(document).ready(function(){
+	jQuery(document).ready(function($){
 		var more = true;
 		$('.agenda-show-more').click(function(event){
 			event.preventDefault();

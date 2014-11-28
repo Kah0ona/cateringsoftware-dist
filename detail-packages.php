@@ -128,6 +128,32 @@
 				    <?php endif; ?>
 				    <h3><?php echo $w->pkgName; ?></h3>
 					<p><?php echo nl2br($w->pkgDesc); ?></p>
+
+
+
+			<div class="share-product" style="margin-top: 10px;">
+			<!-- AddThis Button BEGIN -->
+			<div class="addthis_toolbox addthis_default_style addthis_24x24_style">
+			<a class="addthis_button_preferred_1"></a>
+			<a class="addthis_button_preferred_2"></a>
+			<a class="addthis_button_preferred_3"></a>
+			<a class="addthis_button_preferred_4"></a>
+			<a class="addthis_button_compact"></a>
+			<a class="addthis_counter addthis_bubble_style"></a>
+			</div>
+			<script type="text/javascript">
+				var addthis_config = {"data_track_addressbar":true};
+				var addthis_share = {"url": '<?php echo site_url().'/packages/'.$w->Package_id; ?>'};
+				var addthis_config = addthis_config||{};
+				addthis_config.data_track_addressbar = false;				
+			</script>
+			
+			<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52076b1967f6cd45"></script>
+			<!-- AddThis Button END -->
+		  </div>			
+
+
+
 			   </div><!-- product-data -->
 		    </div><!-- row-fluid2 -->
 		</div><!-- product -->
@@ -162,7 +188,7 @@
 						 	
 						 		<a  data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$d->imageDish; ?>' /><?php } ?>" 
 						 		   rel="popover" 
-							 	   data-placement="left"
+							 	   data-placement="top"
 						 		   data-html="true"
 						 		   data-trigger="hover"
 						 		   class="label label-info xtooltip package-dish-tooltip" 
@@ -192,7 +218,7 @@
 							 	   <?php echo $d->dishName; ?>
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$d->imageDish; ?>' /><?php } ?>"
 							 		   rel="popover" 
-								 	   data-placement="left"
+								 	   data-placement="top"
 							 		   data-html="true"
 
 							 		   data-trigger="hover"
@@ -228,7 +254,7 @@
 							 	   <a data-content="<p class=' '><?php echo $d->dishDesc; ?></p> <?php if($d->imageDish != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Dish/'.$d->imageDish; ?>' /><?php } ?>"
 						 		   rel="popover" 
 						 		   data-trigger="hover"
-						 		   data-placement="left"
+						 		   data-placement="top"
 					 		   	   data-html="true"
 
 						 		   class="label label-info xtooltip package-dish-tooltip" 
@@ -262,7 +288,7 @@
 						 		
 						 		<a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover" 
-   							 		   data-placement="left"
+   							 		   data-placement="top"
 							 		   data-trigger="hover"
 							 		   class="label label-info xtooltip package-dish-tooltip" 
 							 		   href="#" 
@@ -289,7 +315,7 @@
 							 	   <?php echo $d->materialName; ?> (€<?php echo money_format('%.2n', $d->materialPrice); ?> per stuk)
 							 	   <a data-content="<p class=' '><?php echo $d->materialDesc; ?></p> <?php if($d->materialImage != null) { ?><img src='<?php echo SYSTEM_URL_CATERINGSOFTWARE.'/uploads/Material/'.$d->materialImage; ?>' /><?php } ?>" 
 							 		   rel="popover"
-							 		   data-placement="left"							 		    
+							 		   data-placement="top"							 		    
 							 		   data-trigger="hover"
 							 		   data-html="true"
 							 		   class="label label-info xtooltip package-dish-tooltip" 

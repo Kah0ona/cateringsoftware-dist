@@ -186,7 +186,7 @@ function showSendingMessage(){
 
 function showSuccesMessage(){
 	//just redirect to the success page
-	window.location.href = baseUrl+"/bedankt/?id="+workshops[0].Workshop_id+'&email='+escape($('#email').val());
+	window.location.href = "http://"+baseUrl+"/bedankt/?id="+workshops[0].Workshop_id+'&email='+escape(jQuery('#email').val());
 }
 
 /**

@@ -1184,8 +1184,9 @@
 			 	$('#validation-error').removeClass('hidden');
 				return false;
 			}
-			
-			
+			if(this.settings.detail && isNaN(parseInt($('#product-amount').val()))){
+				return false;
+			}		
 			return true;
 		},
 	    //binds all the buttons to the respective event

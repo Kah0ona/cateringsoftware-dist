@@ -23,6 +23,7 @@
 	
 	
 	function calculateDistance (cptaddr, callback) {
+			var $ = jQuery;
 	    	//calc distance between store and cptaddr (compare to address)
 	    	var queryData = {
 			  origin: homeAddr,
@@ -73,6 +74,7 @@
 	}
 	
 	function updateDistanceResult(distance){
+		var $ = jQuery;
 		var delPrice = 0;
 		    	//check in the settings.deliveryCosts what is the delivery price
 		var max = 0;
@@ -164,7 +166,8 @@
 	}
 	
 	function startDistanceCalculator(){
-		$('#city-result').addClass('hidden');
+	    var $ = jQuery;
+		jQuery('#city-result').addClass('hidden');
 		calculateDistance($('#city-check').val(), function(distance, response, status){
 			updateDistanceResult(distance);
 			renderMap(response,status);

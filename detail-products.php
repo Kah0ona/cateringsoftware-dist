@@ -108,6 +108,29 @@
 				    <p>Bijzonderheden: <?php echo $w->dishDeliveryOptions; ?></p>
 				    <?php endif; ?>
 					<p><?php echo nl2br($w->dishDesc); ?></p>
+
+			<div class="share-product" style="margin-top: 10px;">
+			<!-- AddThis Button BEGIN -->
+			<div class="addthis_toolbox addthis_default_style addthis_24x24_style">
+			<a class="addthis_button_preferred_1"></a>
+			<a class="addthis_button_preferred_2"></a>
+			<a class="addthis_button_preferred_3"></a>
+			<a class="addthis_button_preferred_4"></a>
+			<a class="addthis_button_compact"></a>
+			<a class="addthis_counter addthis_bubble_style"></a>
+			</div>
+			<script type="text/javascript">
+				var addthis_config = {"data_track_addressbar":true};
+				var addthis_share = {"url": '<?php echo site_url().'/products/'.$w->Dish_id ?>'};
+				var addthis_config = addthis_config||{};
+				addthis_config.data_track_addressbar = false;				
+			</script>
+			
+			<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52076b1967f6cd45"></script>
+			<!-- AddThis Button END -->
+		  </div>			
+
+
 			   </div><!-- product-data -->
 		    </div><!-- row-fluid2 -->
 		</div><!-- product -->

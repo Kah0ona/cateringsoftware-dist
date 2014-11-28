@@ -57,7 +57,7 @@
 	}
 ?>
 <script type="text/javascript">
-$(document).ready(function(){
+jQuery(document).ready(function($){
 	$('.pagetitle').html("<?php echo $cat->categoryName; ?>");
 });
 

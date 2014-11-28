@@ -202,7 +202,7 @@ function showSendingMessage(f){
 
 function showSuccesMessage(ret){
 	//just redirect to the success page
-	window.location.href = baseUrl+"/success/";
+	window.location.href = 'http://'+baseUrl+"/success/";
 }
 
 var numDaysBeforeOneCanOrder = 1;
